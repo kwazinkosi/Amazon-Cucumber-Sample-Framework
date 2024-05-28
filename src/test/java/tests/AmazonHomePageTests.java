@@ -4,13 +4,13 @@ import BaseClass.Base;
 import pages.ProductDetailsPage;
 import pages.SearchResultsPage;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
@@ -21,8 +21,11 @@ import pages.CartPage;
 public class AmazonHomePageTests extends Base {
 
     
-//	private AmazonHomePage amazonHomePage;
-	
+	private AmazonHomePage amazonHomePage;
+    private SearchResultsPage searchResultsPage;
+//    private ProductDetailsPage productDetailsPage;
+    private CartPage cartPage;
+
 	@DataProvider(name = "searchItems")
     public Object[][] testData() {
         return new Object[][] {
@@ -38,10 +41,12 @@ public class AmazonHomePageTests extends Base {
 
     @BeforeClass
     public void setup() {
-
-		log.info("\n//============== AmazonHomePage Tests =============\\");
+        amazonHomePage = new AmazonHomePage();
+        searchResultsPage = new SearchResultsPage();
+//        productDetailsPage = new ProductDetailsPage(null);
+        cartPage = new CartPage();
+        log.info("\n//============== AmazonHomePage Tests =============\\");
         System.out.println("\n### ============================== AmazonHomePage Tests ============================== ###");
-//        amazonHomePage = new AmazonHomePage(); // No need for getDriver()
     }
 
     @AfterClass
@@ -53,22 +58,14 @@ public class AmazonHomePageTests extends Base {
         System.out.println("### ============================== AmazonHomePage Tests End ============================== ###");
         log.info("//============== AmazonHomePage Tests End =============\\");
     }
-
-    @AfterMethod
-    public void tear() {
-    	if (driver != null) {
-        	System.out.println("		### AmazonHomePage::tear() -- Destroying page ###");
-            driver.quit();
-        }
-    }
     
     @Test
     public void testVerifyAmazonLogoIsDisplayed() {
-    	AmazonHomePage amazonHome =new AmazonHomePage();
+//    	AmazonHomePage amazonHome =new AmazonHomePage();
     	try {
     		System.out.println("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- testing logo ###");
-    		amazonHome.goToAmazon();
-	        Assert.assertTrue(amazonHome.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
+    		amazonHomePage.goToAmazon();
+	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
 	        log.info("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- logo displayed ###");
 	        
 	    } catch (Exception e) {
@@ -80,16 +77,18 @@ public class AmazonHomePageTests extends Base {
     
     @Test(dataProvider = "searchItems")
     public void testSearchForProductAndVerifyResult(String searchTerm) {
-    	AmazonHomePage amazonHome =new AmazonHomePage();
+//    	AmazonHomePage amazonHome =new AmazonHomePage();
         // Search for the specified item
-        amazonHome.goToAmazon();
-        amazonHome.searchForItem(searchTerm);
+        amazonHomePage.goToAmazon();
+        amazonHomePage.searchForItem(searchTerm);
 
         // Verify that the search box is displayed
-        boolean isSearchBoxDisplayed = amazonHome.verifySearchBoxIsDisplayed();
+        boolean isSearchBoxDisplayed = amazonHomePage.verifySearchBoxIsDisplayed();
         Assert.assertTrue(isSearchBoxDisplayed, "Search results header is not displayed for search term: " + searchTerm);
 
-        // Add additional verification,  check search results
+        // Verify search results title contains the search term
+        String actualTitle = driver.findElement(By.cssSelector("h2.s-search-results-title")).getText();
+        Assert.assertTrue(actualTitle.contains(searchTerm), "Search results title does not contain search term: " + searchTerm);
         
        
     }
@@ -99,43 +98,42 @@ public class AmazonHomePageTests extends Base {
     	
     	System.out.println("		### AmazonHomePageTests::verifySearchResultIsDisplayed() -- verifying if search result is displayed()");
     	log.info("		### AmazonHomePage::verifySearchResultIsDisplayed() -- verifying if search result is displayed()");
-    	AmazonHomePage amazonHome =new AmazonHomePage();
-    	amazonHome.goToAmazon();
-        amazonHome.searchForItem("ipad");
-    	boolean isSearchResultsDisplayed = amazonHome.verifySearchResultIsDisplayed();
+//    	AmazonHomePage amazonHome =new AmazonHomePage();
+    	amazonHomePage.goToAmazon();
+        amazonHomePage.searchForItem("ipad");
+    	boolean isSearchResultsDisplayed = amazonHomePage.verifySearchResultIsDisplayed();
     	Assert.assertTrue(isSearchResultsDisplayed, "### Search results header is not displayed ###");	
     }
     
     @Test
     public void testVerifyGlobalWaitTime() {
     	
-    	AmazonHomePage amazonHome =new AmazonHomePage();
-        int expectedWaitTime = amazonHome.getGlobalWaitTime();
+//    	AmazonHomePage amazonHome =new AmazonHomePage();
+        int expectedWaitTime = amazonHomePage.getGlobalWaitTime();
         Assert.assertEquals(expectedWaitTime, 10, "Global wait time is not set to default value (10 seconds)");
     }
     
     @Test
     public void verifySearchProductAndBuy() {
     	
-    	AmazonHomePage amazonHome = new AmazonHomePage();
-    	SearchResultsPage searchResults = new SearchResultsPage();
-    	CartPage cart =new CartPage();
+//    	AmazonHomePage amazonHome = new AmazonHomePage();
+//    	SearchResultsPage searchResults = new SearchResultsPage();
+//    	CartPage cart =new CartPage();
     	String item ="ipad";
     	
     	
-    	amazonHome.goToAmazon();
-    	amazonHome.searchForItem(item);
+    	amazonHomePage.goToAmazon();
+    	amazonHomePage.searchForItem(item);
     	// Find the product 
     	System.out.println("		### AmazonHomePageTests::verifySearchProductAndBuy() -- searching for item: "+item);
-    	ProductDetailsPage product = searchResults.findProduct(item);
+    	ProductDetailsPage product = searchResultsPage.findProduct(item);
     	//Add product to cart
     	product.addToCart(0.0);
-    	if(!cart.isCartEmpty()) {
+    	if(!cartPage.isCartEmpty()) {
     		// proceed to checkout
-    		cart.proceedToCheckout();
+    		cartPage.proceedToCheckout();
     	}
-    	
-    	
     }
 }
+
 

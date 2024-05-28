@@ -37,7 +37,7 @@ public class Base {
 	protected static WebDriver driver;
 	
 	protected static WebDriverWait wait;
-	protected int timeoutSec = 50; // wait timeout = 5seconds by default
+	protected int timeoutSec = 50; // wait timeout = 50seconds by default
 	protected static Properties props;
 	protected ScreenCapturer screenCapturer;
 
