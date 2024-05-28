@@ -192,7 +192,7 @@ public class Base {
 			
 			System.out.println("		### Base --waiting for element to display. ###");
         	log.info("		### Base --waiting for element to display. ###");
-			wait.until(ExpectedConditions.visibilityOfElementLocated((By) element));
+			wait.until(ExpectedConditions.visibilityOf(element));
 			return true;
 		} catch (TimeoutException e) {
 			log.warn("Timeout of {} wait for {}", timeoutSec, element);

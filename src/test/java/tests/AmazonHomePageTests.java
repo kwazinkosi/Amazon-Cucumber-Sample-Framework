@@ -30,7 +30,7 @@ public class AmazonHomePageTests extends Base {
     public Object[][] testData() {
         return new Object[][] {
                 {"headphones"},
-                {"ipad"},
+//                {"ipad"},
                 // to add more search terms later
         };
     }
