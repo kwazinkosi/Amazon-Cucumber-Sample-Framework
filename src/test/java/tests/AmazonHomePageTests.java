@@ -6,6 +6,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.AmazonHomePage;
 
@@ -13,8 +14,18 @@ public class AmazonHomePageTests extends Base {
 
     
 	private AmazonHomePage amazonHomePage;
-	public AmazonHomePageTests(String screenshotDir) {
-		super(screenshotDir);
+	
+	@DataProvider(name = "searchItems")
+    public Object[][] testData() {
+        return new Object[][] {
+                {"stm32"},
+                {"raspberry pi"},
+                // to add more search terms later
+        };
+    }
+    
+	public AmazonHomePageTests() {
+		super("screenshots");
 	}
 
     @BeforeClass
@@ -41,18 +52,22 @@ public class AmazonHomePageTests extends Base {
 	  		takeScreenshotOnFailure("testFailure_"); //capture screen
 		}
     }
-
-    @Test
-    public void testSearchForProductAndVerifyResults() {
+    
+    @Test(dataProvider = "searchItems")
+    public void testSearchForProductAndVerifyResult(String searchTerm) {
     	
-    	boolean isSearchBoxDisplayed = amazonHomePage.verifySearchBoxIsDisplayed();
-        
-        Assert.assertTrue(isSearchBoxDisplayed, "### Search results header is not displayed ###");
-        // If the assertion passes, continue with the test
-        String item = "Headphones"; // TODO: use @DataProvider
+        // Search for the specified item
         amazonHomePage.goToAmazon();
-        amazonHomePage.searchForItem(item);
+        amazonHomePage.searchForItem(searchTerm);
+
+        // Verify that the search box is displayed
+        boolean isSearchBoxDisplayed = amazonHomePage.verifySearchBoxIsDisplayed();
+        Assert.assertTrue(isSearchBoxDisplayed, "Search results header is not displayed for search term: " + searchTerm);
+
+        // Add additional verification,  check search results
+       
     }
+
 
     @Test
 	public void verifySearchResultIsDisplayed() {

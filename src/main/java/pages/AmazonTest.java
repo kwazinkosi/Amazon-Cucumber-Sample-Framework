@@ -1,13 +1,20 @@
 package pages;
 
+import BaseClass.Base;
 
-
-public class AmazonTest {
+public class AmazonTest extends Base {
 	
 
-    public static void main(String[] args) {
+    public AmazonTest() {
+		super("screenshots");
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
     	
+    	setupLogging();
 		AmazonHomePage amazonHomePage = new AmazonHomePage();
+		SearchResultsPage searchPage = new SearchResultsPage();
 		
 		// Initialize WebDriver and navigate to Amazon
 		amazonHomePage.goToAmazon();

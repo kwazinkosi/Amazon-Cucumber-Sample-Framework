@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeClass;
 //import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeSuite;
 
 import screenshots.ScreenCapturer;
 import utils.FileManager;
@@ -29,66 +30,71 @@ import utils.WebDriverWaitManager;
 
 public class Base {
 
-	protected final Logger log = LogManager.getLogger(this.getClass());
+	protected final static Logger log = LogManager.getLogger(Base.class);
 	protected static WebDriver driver;
-	private WebDriverWait wait;
+	protected static WebDriverWait wait;
 	protected int timeoutSec = 5; // wait timeout = 5seconds by default
 	protected static Properties props;
-	protected final ScreenCapturer screenCapturer; 
+	protected final ScreenCapturer screenCapturer;
 
 	public Base(String screenshotDir) {
-		
-		setupLogging();
-		try {
 
-			String fileName = "props.properties";
-			Base.props = loadProperties(fileName);
-			setupDriver();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		this.screenCapturer = new ScreenCapturer(driver, screenshotDir);
+		System.out.println("Base() -- done constructing ");
 	}
-
 	
-	public void setupLogging() {
+	@BeforeSuite
+	public static void setupLogging() {
 
-	    String log4jConfigFile = System.getProperty("user.dir") + File.separator + "log4j2.properties";
-	    ConfigurationSource source;
+		System.out.println("Base::setupLogging() -- Attempting to configure logger.");
+		String log4jConfigFile = System.getProperty("user.dir") + File.separator + "log4j.properties";
+		System.out.println("Base::setupLogging() -- log4jConfig file is "+ log4jConfigFile);
+		ConfigurationSource source;
+		
 		try {
-			
+
 			source = new ConfigurationSource(new FileInputStream(log4jConfigFile));
-		    Configurator.initialize(null, source);
-		    System.out.println("Base::setupLogging() -- Done configuring logger.");
+			Configurator.initialize(null, source);
+			System.out.println("Base::setupLogging() -- Done configuring logger.");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    log.error("Failed to find log4j.properties file: " + log4jConfigFile, e); // Log the error with exception details
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    log.error("Error while configuring logger: " + log4jConfigFile, e); // Log the error with exception details
 		}
 	}
-	
+
 	@BeforeClass
 	public void setupDriver() {
 		
-		System.out.println("Base::setupDriver()");
+
+		try {
+//			setupLogging();
+			String fileName = "props.properties";
+			Base.props = loadProperties(fileName);
+//			setupDriver();
+		} catch (IOException e) {
+			log.error("		### Base() -- logging configuration failed");
+			e.printStackTrace();
+		}
+
+
+		System.out.println("Base::setupDriver() -- setting up the browser");
 		String browserName = getBrowserName(); // get browser name from properties file
-		
+
 		switch (browserName.toLowerCase()) {
-		
-			case "chrome":
-				driver = new ChromeDriver();
-				break;
-			case "firefox":
-				driver = new FirefoxDriver();
-				break;
-			case "edge":
-				driver = new EdgeDriver();
-				break;
-			default:
-				throw new RuntimeException("Unsupported browser: " + browserName);
+
+		case "chrome":
+			driver = new ChromeDriver();
+			break;
+		case "firefox":
+			driver = new FirefoxDriver();
+			break;
+		case "edge":
+			driver = new EdgeDriver();
+			break;
+		default:
+			throw new RuntimeException("Unsupported browser: " + browserName);
 		}
 
 		driver.manage().window().maximize();
@@ -96,6 +102,7 @@ public class Base {
 	}
 
 	public void click(WebElement element) {
+		pause(1000); //TODO delete this later
 		find(element).click();
 	}
 
@@ -105,13 +112,13 @@ public class Base {
 
 	// take screenshot upon failure
 	public void takeScreenshotOnFailure(String imgType) {
-	    try {
-	        screenCapturer.captureScreenshot(imgType);
-	    } catch (IOException e) {
-	        log.error("Failed to capture screenshot on failure", e); // Log the error with exception details
-	    }
+		try {
+			screenCapturer.captureScreenshot(imgType);
+		} catch (IOException e) {
+			log.error("Failed to capture screenshot on failure", e); // Log the error with exception details
+		}
 	}
-	
+
 	// get the Url of page
 	public String getApplicationUrl() {
 		return props.getProperty("appUrl");
@@ -132,39 +139,50 @@ public class Base {
 	}
 
 	public void visitPage(String url) {
+		log.info("		### getTotalCartPrice() -- total price captured ###");
 		driver.manage().deleteAllCookies();
 		driver.get(url);
 	}
 
 	public WebElement find(WebElement element) {
-	    try {
-	        // Since the element is already located by @FindBy, we just wait for it to be present
-	        return wait.until(ExpectedConditions.visibilityOf(element));
-	    } catch (TimeoutException | NoSuchElementException e) {
-	        log.error("Element not found: " + element, e);
-	        throw e; // Re-throw the exception for handling in test cases
-	    }
+		try {
+			// Since the element is already located by @FindBy, we just wait for it to be
+			// present
+			return wait.until(ExpectedConditions.visibilityOf(element));
+		} catch (TimeoutException | NoSuchElementException e) {
+			log.error("Element not found: " + element, e);
+			throw e; // Re-throw the exception for handling in test cases
+		}
 	}
 
 	public void typeText(WebElement element, String text) {
-	    WebElement webElement = find(element); // Wait for the element to be visible
-	    webElement.clear(); // Clear the field before typing
-	    webElement.sendKeys(text); // Send the text to the element
+		WebElement webElement = find(element); // Wait for the element to be visible
+		webElement.clear(); // Clear the field before typing
+		webElement.sendKeys(text); // Send the text to the element
 	}
 
-	public boolean isDisplayed(WebElement searchBox) {
-		
+	public boolean isDisplayed(WebElement element) {
+
 		try {
-			wait.until(ExpectedConditions.visibilityOfElementLocated((By) searchBox));
+			wait.until(ExpectedConditions.visibilityOfElementLocated((By) element));
 			return true;
 		} catch (TimeoutException e) {
-			log.warn("Timeout of {} wait for {}", timeoutSec, searchBox);
+			log.warn("Timeout of {} wait for {}", timeoutSec, element);
 			return false;
 		}
 	}
-	
+
+	public void pause(int timesec) {
+		try {
+			Thread.sleep(timesec);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public static WebDriver getDriver() {
-      
+
 		return driver;
-    }
+	}
 }

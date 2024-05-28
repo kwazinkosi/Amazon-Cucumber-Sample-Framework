@@ -10,4 +10,5 @@ public class WebDriverWaitManager {
     public static WebDriverWait createWebDriverWait(WebDriver driver, int timeout) {
         return new WebDriverWait(driver, Duration.ofSeconds(timeout));
     }
+    
 }
