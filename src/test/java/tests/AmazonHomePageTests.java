@@ -87,7 +87,7 @@ public class AmazonHomePageTests extends Base {
         Assert.assertTrue(isSearchBoxDisplayed, "Search results header is not displayed for search term: " + searchTerm);
 
         // Verify search results title contains the search term
-        String actualTitle = driver.findElement(By.cssSelector("h2.s-search-results-title")).getText();
+        String actualTitle = driver.findElement(By.cssSelector("h2.s-line-clamp-2")).getText();
         Assert.assertTrue(actualTitle.contains(searchTerm), "Search results title does not contain search term: " + searchTerm);
         
        
