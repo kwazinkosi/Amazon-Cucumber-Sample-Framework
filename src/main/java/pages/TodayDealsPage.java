@@ -31,13 +31,12 @@ public class TodayDealsPage extends Base {
     }
 
     public void goToTodaysDeals() {
-        todaysDealsLink.click();
-         
+       click(todaysDealsLink);
     }
 
     public void clickOnElectronicsCategory() {
-    	//check if button exist
-        electronicsButton.click(); // Assuming the button navigates to the Electronics category
+    	
+    	click(electronicsButton); // Assuming the button navigates to the Electronics category
     }
 
     public String getDiscountPercentage(WebElement discountElement) {

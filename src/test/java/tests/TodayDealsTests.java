@@ -15,6 +15,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import BaseClass.Base;
+import pages.AmazonHomePage;
 import pages.TodayDealsPage;
 
 public class TodayDealsTests extends Base {
@@ -32,21 +33,32 @@ public class TodayDealsTests extends Base {
     @FindBy(xpath = "//a[contains(text(),'Apple-2022-10-9-inch-iPad-Wi-Fi') and @href[contains(@href, '/dp/B0BJMGXLYZ')]]")
     private WebElement ipad;
     
+    private AmazonHomePage amazonHomePage = new AmazonHomePage();
+    
     public TodayDealsTests(String screenshotDir) {
 		super(screenshotDir);
 	}
 
     @BeforeClass // Setup before running any tests
     public void setUp() {
+    	// navigate to amazon first
+    	amazonHomePage.goToAmazon();
         todayDeals = new TodayDealsPage(); // Creating an instance of TodayDeals page
     }
 
     @BeforeMethod // Setup before each test method
     public void navigateToTodaysDeals() {
+    	try {
+    		amazonHomePage.goToAmazon();
+	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
+	  	} catch (Exception e) {
+	  		takeScreenshotOnFailure("testFailure_"); //capture screen
+		}
+    	
         todayDeals.goToTodaysDeals(); // Navigate to Today's Deals page using the TodayDeals object
     }
 
-    @Test // Test case to verify navigation to Electronics category
+    @Test(priority = 1) // Test case to verify navigation to Electronics category
     public void verifyNavigationToElectronicsCategory() {
     	
         todayDeals.clickOnElectronicsCategory(); // Click on the Electronics category button/link

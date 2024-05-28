@@ -1,4 +1,4 @@
-package pages;
+/*package pages;
 
 import BaseClass.Base;
 
@@ -31,4 +31,4 @@ public class AmazonTest extends Base {
 		// driver.quit();
     }
 }
-
+*/
