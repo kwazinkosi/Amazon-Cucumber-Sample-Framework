@@ -1,8 +1,9 @@
 <!-- -->
-<Test>
-	<Suite>
-		<Tests>
-			
-		</Tests>
-	</Suite>
-</Test>
+<testng>
+    <test name="MyAmazonTestSuite">
+        <classes>
+            <class name="amazon-test-automation.AmazonHomePageTests" />
+            <class name="amazon-test-automation.TodayDealsTests" />
+        </classes>
+    </test>
+</testng>

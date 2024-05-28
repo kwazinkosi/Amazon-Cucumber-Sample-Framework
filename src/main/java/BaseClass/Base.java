@@ -37,7 +37,7 @@ public class Base {
 	protected static WebDriver driver;
 	
 	protected static WebDriverWait wait;
-	protected int timeoutSec = 5; // wait timeout = 5seconds by default
+	protected int timeoutSec = 50; // wait timeout = 5seconds by default
 	protected static Properties props;
 	protected ScreenCapturer screenCapturer;
 
@@ -62,9 +62,9 @@ public class Base {
 			Configurator.initialize(null, source);
 			System.out.println("Base::setupLogging() -- Done configuring logger.");
 		} catch (FileNotFoundException e) {
-		    log.error("Failed to find log4j.properties file: " + log4jConfigFile, e); // Log the error with exception details
+		    log.error("Base::setupLogging() -- Failed to find log4j.properties file: " + log4jConfigFile, e); // Log the error with exception details
 		} catch (IOException e) {
-		    log.error("Error while configuring logger: " + log4jConfigFile, e); // Log the error with exception details
+		    log.error("Base::setupLogging() -- Error while configuring logger: " + log4jConfigFile, e); // Log the error with exception details
 		}
 	}
 
@@ -153,7 +153,7 @@ public class Base {
 	}
 
 	public int getGlobalWaitTime() {
-		return Integer.parseInt(props.getProperty("globalWaitTime", "10")); // Set default if not present
+		return Integer.parseInt(props.getProperty("globalWaitTime", "50")); // Set default if not present
 	}
 
 	// =============== Getters and Setters ================\\
@@ -162,7 +162,9 @@ public class Base {
 	}
 
 	public void visitPage(String url) {
-		log.info("		### getTotalCartPrice() -- total price captured ###");
+		
+		log.info("		### visitPage() -- visiting "+url+" ###");
+		System.out.println("		### visitPage() -- visiting "+url+" ###");
 		driver.manage().deleteAllCookies();
 		driver.get(url);
 	}

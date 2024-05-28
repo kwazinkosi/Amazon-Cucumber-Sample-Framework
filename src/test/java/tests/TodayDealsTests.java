@@ -44,11 +44,14 @@ public class TodayDealsTests extends Base {
     	// navigate to amazon first
     	amazonHomePage.goToAmazon();
         todayDeals = new TodayDealsPage(); // Creating an instance of TodayDeals page
+        log.info("### ============================== TodayDealsTests ============================== ###");
+        System.out.println("### ============================== TodayDealsTests ============================== ###");
     }
 
     @BeforeMethod // Setup before each test method
     public void navigateToTodaysDeals() {
     	try {
+    		 System.out.println("		### navigateToTodaysDeals() -- Trying to navigate to amazon ###");
     		amazonHomePage.goToAmazon();
 	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
 	        System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");

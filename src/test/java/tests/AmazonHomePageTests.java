@@ -18,8 +18,8 @@ public class AmazonHomePageTests extends Base {
 	@DataProvider(name = "searchItems")
     public Object[][] testData() {
         return new Object[][] {
-                {"stm32"},
-                {"raspberry pi"},
+                {"headphones"},
+                {"ipad"},
                 // to add more search terms later
         };
     }
@@ -32,24 +32,33 @@ public class AmazonHomePageTests extends Base {
     public void setup() {
 
 		log.info("//============== AmazonHomePage Tests =============\\");
+        System.out.println("### ============================== AmazonHomePage Tests ============================== ###");
         amazonHomePage = new AmazonHomePage(); // No need for getDriver()
     }
 
     @AfterClass
     public void tearDown() {
         if (driver != null) {
+        	System.out.println("		### AmazonHomePage::tearDown() -- Quiting ###");
             driver.quit();
         }
+        System.out.println("### ============================== AmazonHomePage Tests End ============================== ###");
         log.info("//============== AmazonHomePage Tests End =============\\");
     }
 
     @Test
     public void testVerifyAmazonLogoIsDisplayed() {
     	try {
-	        amazonHomePage.goToAmazon();
+    		System.out.println("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- testing logo ###");
+    		amazonHomePage.goToAmazon();
 	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
-	  	} catch (Exception e) {
+	        log.info("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- logo displayed ###");
+	        
+	    } catch (Exception e) {
+	  		System.out.println("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
 	  		takeScreenshotOnFailure("testFailure_"); //capture screen
+    		
+	        log.error("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
 		}
     }
     

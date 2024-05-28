@@ -49,7 +49,8 @@ import java.util.Properties;
 public class FileManager {
 
 	public static Properties loadProperties(String fileName) throws IOException {
-	    Properties props = new Properties();
+	    
+		Properties props = new Properties();
 	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 	    InputStream inputStream = classLoader.getResourceAsStream(fileName);
 	    if (inputStream == null) {
