@@ -16,58 +16,38 @@ public class SearchResultsPage extends Base {
     @FindBy(css = ".s-search-results")
     private WebElement productListings;
 
-    public ProductDetailsPage product = new ProductDetailsPage();
+//    public ProductDetailsPage product = new ProductDetailsPage();
     
     public SearchResultsPage() {
         super("screenshots");
     }
 
-    /*public ProductDetailsPage selectItemWithDiscount(String itemName, double minDiscount) {
-        List<WebElement> productElements = productListings.findElements(By.className("s-result-item"));  // Assuming product listings are within <li> elements
+    
+
+    public ProductDetailsPage selectItemWithDiscount(String itemName, double minDiscount) {
+    	 ProductDetailsPage productPage;
+        List<WebElement> productElements = productListings.findElements(By.cssSelector(".s-result-item[data-component-type='s-search-result']")); 
 
         for (WebElement productElement : productElements) {
         	
-        	WebElement element = productElement.findElement(By.cssSelector("h2 a "));
-            String productName = element.findElement(By.className("a-text-narmal")).getText();
-             
-            System.out.println("SearchResultsPage::selectItemWithDiscount() --  product name is "+ productName);
-            if (productName.contains(itemName)) {
-                int discountValue = product.getDiscountValue(element);
-
-                if (discountValue >= minDiscount) {
-                    
-                	Actions actions = new Actions(driver);
-                    pause(1000);
-                    actions.moveToElement(productElement).click().perform();  // Hover and click on the product
-                    return new ProductDetailsPage(); 
-                    
-                } else {
-                    System.out.println(itemName + " discount is less than " + minDiscount + "%");
-                }
-            }
-        }
-        System.out.println("Couldn't find item: " + itemName);
-        return null; // Indicate item not found
-    }*/
-
-    public ProductDetailsPage selectItemWithDiscount(String itemName, double minDiscount) {
-        List<WebElement> productElements = productListings.findElements(By.cssSelector(".s-result-item[data-component-type='s-search-result']"));  // Improved selector using data-component-type
-
-        for (WebElement productElement : productElements) {
+        	productPage = new ProductDetailsPage(productElement);
             WebElement titleElement = productElement.findElement(By.cssSelector("h2 a"));
-            String productName = titleElement.findElement(By.className("a-text-narmal")).getText();
+            String productName = titleElement.findElement(By.className("a-text-normal")).getText();
 
-            log.info("Checking product: " + productName);
+            log.info("		### SearchResultsPage::selectItemWithDiscount() -- Checking product: " + productName);
+            System.out.println("		### SearchResultsPage::selectItemWithDiscount() -- Checking product: " + productName);
             if (productName.contains(itemName)) {
-                int discountValue = product.getDiscountValue(titleElement);
+                int discountValue = productPage.getDiscountValue(titleElement);
 
                 if (discountValue >= minDiscount) {
                 	
                     Actions actions = new Actions(driver);
                     wait.until(ExpectedConditions.elementToBeClickable(productElement));
                     actions.moveToElement(productElement).click().perform();
-
-                    return new ProductDetailsPage();
+                    System.out.println("		### SearchResultsPage::selectItemWithDiscount() -- Returning item: " + productName);
+                    log.info("		### SearchResultsPage::selectItemWithDiscount() -- Returning item: " + productName);
+                    //Return page 
+                    return new ProductDetailsPage(productElement);
                 } else {
                     log.info(itemName + " discount is less than " + minDiscount + "%");
                 }
@@ -78,5 +58,10 @@ public class SearchResultsPage extends Base {
         return null;
     }
 
+    //Find item
+    public ProductDetailsPage findProduct(String itemName) {
+    	
+    	return selectItemWithDiscount(itemName, 0.0);
+    }
     
 }

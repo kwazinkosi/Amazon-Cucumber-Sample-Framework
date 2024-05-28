@@ -18,15 +18,19 @@ public class ProductDetailsPage extends Base {
 	@FindBy(id="attach-sidesheet-view-cart-button")
 	private WebElement cart; // visible after adding an item to cart
 	
-	public ProductDetailsPage() {
+	private WebElement product;
+	
+	public ProductDetailsPage(WebElement product) {
+		
 		super("screenshots");
+		this.product = product;	
 	}
 
 	// Add product to cart
-    public void addToCart(WebElement product, double minDiscount) {
+    public void addToCart(double minDiscount) {
     	
         // Check for discount
-        if (getDiscountValue(product) >= minDiscount) {
+        if (getDiscountValue(this.product) >= minDiscount) {
         	
             click(addToCartButton);
             // check if the proceedToCart element is displayed
@@ -71,5 +75,18 @@ public class ProductDetailsPage extends Base {
             return -1; 
         }
         return discountValue;
+    }
+    
+    public void setProduct(WebElement prdt) {
+    	product =prdt;
+    }
+    
+    public WebElement getProduct() {
+        if (product == null) {
+        	System.out.println("		### getProduct() -- not initialised ###");
+            throw new NullPointerException("Product element is null. Please initialize it before accessing.");
+        }
+        System.out.println("		### getProduct() --  product returned successfully ###");
+        return this.product;
     }
 }

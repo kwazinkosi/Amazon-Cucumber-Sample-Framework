@@ -189,6 +189,9 @@ public class Base {
 	public boolean isDisplayed(WebElement element) {
 
 		try {
+			
+			System.out.println("		### Base --waiting for element to display. ###");
+        	log.info("		### Base --waiting for element to display. ###");
 			wait.until(ExpectedConditions.visibilityOfElementLocated((By) element));
 			return true;
 		} catch (TimeoutException e) {

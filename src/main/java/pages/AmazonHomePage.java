@@ -5,6 +5,7 @@ import org.openqa.selenium.support.FindBy;
 //import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import BaseClass.Base;
 
@@ -37,10 +38,14 @@ public class AmazonHomePage extends Base {
 
     public void searchForItem(String item) {
     	
-    	log.info("		### Searching for item: " + item + " ###");
+    	log.info("		### AmazonHomePage::searchForItem() -- Searching for item: " + item + " ###");
+    	System.out.println("		### AmazonHomePage::searchForItem() -- Searching for item: " + item + " ###");
     	typeText(searchBox, item);
         searchBox.sendKeys(Keys.ENTER);
-        log.info("		### Search submitted for item: " + item + " ###");
+        wait.until(ExpectedConditions.visibilityOf(searchResults));
+        
+        log.info("		### AmazonHomePage::searchForItem() -- Search submitted for item: " + item + " ###");
+        System.out.println("		### AmazonHomePage::searchForItem() -- Search submitted for item:: " + item + " ###");
         // TODO: return searchResultsPage instead
     }
     
@@ -48,9 +53,11 @@ public class AmazonHomePage extends Base {
     	
     	boolean isDisplayed = isDisplayed(amazonLogo);
         if (isDisplayed) {
-            log.info("		### Logo is displayed. ###");
+        	System.out.println("		### AmazonHomePage::verifyLogoIsDisplayed() -- Logo is displayed ###");
+            log.info("		### AmazonHomePage::verifyLogoIsDisplayed() -- Logo is displayed. ###");
         } else {
-            log.error("		### Logo is not displayed. ###");
+            log.error("		###  AmazonHomePage::verifyLogoIsDisplayed() -- Logo is not displayed. ###");
+            System.out.println("		### AmazonHomePage::verifyLogoIsDisplayed() -- Logo is not displayed ###");
         }
         return isDisplayed;
     }
@@ -60,9 +67,11 @@ public class AmazonHomePage extends Base {
     	boolean isDisplayed = isDisplayed(searchBox);
         if (isDisplayed) {
             
-        	 log.info("		### Search box is displayed. ###");
+        	 System.out.println("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Logo is displayed ###");
+        	 log.info("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Search box is displayed. ###");
         } else {
-            log.error("		### Search box is not displayed. ###");
+            log.error("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Search box is not displayed. ###");
+            System.out.println("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Logo is not displayed ###");
         }
         return isDisplayed;
     }
@@ -71,9 +80,11 @@ public class AmazonHomePage extends Base {
 	    	
     	boolean isDisplayed = isDisplayed(searchResults);
         if (isDisplayed) {
-            log.info("		### Search results page displayed. ###");
+            log.info("		### AmazonHomePage::verifySearchResultIsDisplayed() -- Search results page displayed. ###");
+            System.out.println("		### AmazonHomePage::verifySearchResultIsDisplayed() -- Search results page displayed. ###");
         } else {
-            log.error("		### Search results page not displayed. ###");
+        	System.out.println("		### AmazonHomePage::verifySearchResultIsDisplayed() -- Search results page displayed. ###");
+            log.error("		### AmazonHomePage::verifySearchResultIsDisplayed() -- Search results page not displayed. ###");
         }
         return isDisplayed;
     }
