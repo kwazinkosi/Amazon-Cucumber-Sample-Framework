@@ -44,7 +44,7 @@ public class Base {
 	public Base(String screenshotDir) {
 
 		
-		this.screenCapturer = new ScreenCapturer(driver, screenshotDir);
+		this.screenCapturer = new ScreenCapturer(screenshotDir);
 		System.out.println("Base() -- done constructing ");
 	}
 	
@@ -92,19 +92,22 @@ public class Base {
 			
 			ChromeOptions cOptions = new ChromeOptions();
 			cOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
-			driver = new ChromeDriver(cOptions);
+//			driver = new ChromeDriver(cOptions);
+			driver = new ChromeDriver();
 			break;
 			
 		case "firefox":
 			
 			FirefoxOptions fOptions = new FirefoxOptions();
 			fOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
-			driver = new FirefoxDriver(fOptions);
+//			driver = new FirefoxDriver(fOptions);
+			driver = new FirefoxDriver();
 			break;
 			
 		case "edge":
 			EdgeOptions eOptions = new EdgeOptions();
 			eOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
+//			driver = new EdgeDriver(eOptions);
 			driver = new EdgeDriver();
 			break;
 			
@@ -128,9 +131,14 @@ public class Base {
 	// take screenshot upon failure
 	public void takeScreenshotOnFailure(String imgType) {
 		try {
-			screenCapturer.captureScreenshot(imgType);
+			
+			screenCapturer.captureScreenshot(driver, imgType);
+			System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
+            log.info("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
 		} catch (IOException e) {
-			log.error("Failed to capture screenshot on failure", e); // Log the error with exception details
+			
+			log.error("		### Failed to capture screenshot on failure ###", e); // Log the error with exception details
+			System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
 		}
 	}
 

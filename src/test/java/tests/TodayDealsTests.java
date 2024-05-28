@@ -55,7 +55,7 @@ public class TodayDealsTests extends Base {
             log.info("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
 	  	} catch (Exception e) {
 	  		System.out.println("		### Failure::navigateToTodaysDeals() -- navigation to amazon failed! ###");
-            log.info("		### navigateToTodaysDeals() -- navigation to amazon failed! ###");
+            log.error("		### navigateToTodaysDeals() -- navigation to amazon failed! ###");
 	  		takeScreenshotOnFailure("testFailure_"); //capture screen
 		}
     	

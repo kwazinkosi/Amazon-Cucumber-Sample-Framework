@@ -29,7 +29,7 @@ public class AmazonHomePage extends Base {
         PageFactory.initElements(driver, this); // Initialize web elements
     }
     public void goToAmazon() {
-    	pause(1000);
+
     	log.info("		### Navigating to Amazon homepage. ###");
         visitPage(getApplicationUrl()); // Using Base class visitPage method
         log.info("		### Amazon homepage opened successfully. ###");
