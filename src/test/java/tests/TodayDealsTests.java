@@ -51,7 +51,11 @@ public class TodayDealsTests extends Base {
     	try {
     		amazonHomePage.goToAmazon();
 	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is not displayed on homepage");
+	        System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
+            log.info("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
 	  	} catch (Exception e) {
+	  		System.out.println("		### Failure::navigateToTodaysDeals() -- navigation to amazon failed! ###");
+            log.info("		### navigateToTodaysDeals() -- navigation to amazon failed! ###");
 	  		takeScreenshotOnFailure("testFailure_"); //capture screen
 		}
     	

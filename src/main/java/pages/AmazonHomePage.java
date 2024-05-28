@@ -41,6 +41,7 @@ public class AmazonHomePage extends Base {
     	typeText(searchBox, item);
         searchBox.sendKeys(Keys.ENTER);
         log.info("		### Search submitted for item: " + item + " ###");
+        // TODO: return searchResultsPage instead
     }
     
     public boolean verifyLogoIsDisplayed() {
@@ -76,11 +77,5 @@ public class AmazonHomePage extends Base {
         }
         return isDisplayed;
     }
-
-//    public void goToYourAccount() {
-//        // once on amazon
-//        // find the account element and click
-//        
-//    }
 }
 

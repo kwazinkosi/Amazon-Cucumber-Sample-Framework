@@ -65,6 +65,7 @@ public class AmazonHomePageTests extends Base {
         Assert.assertTrue(isSearchBoxDisplayed, "Search results header is not displayed for search term: " + searchTerm);
 
         // Add additional verification,  check search results
+        
        
     }
 

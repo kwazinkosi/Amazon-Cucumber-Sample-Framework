@@ -16,8 +16,11 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeClass;
@@ -32,10 +35,11 @@ public class Base {
 
 	protected final static Logger log = LogManager.getLogger(Base.class);
 	protected static WebDriver driver;
+	
 	protected static WebDriverWait wait;
 	protected int timeoutSec = 5; // wait timeout = 5seconds by default
 	protected static Properties props;
-	protected final ScreenCapturer screenCapturer;
+	protected ScreenCapturer screenCapturer;
 
 	public Base(String screenshotDir) {
 
@@ -85,14 +89,25 @@ public class Base {
 		switch (browserName.toLowerCase()) {
 
 		case "chrome":
-			driver = new ChromeDriver();
+			
+			ChromeOptions cOptions = new ChromeOptions();
+			cOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
+			driver = new ChromeDriver(cOptions);
 			break;
+			
 		case "firefox":
-			driver = new FirefoxDriver();
+			
+			FirefoxOptions fOptions = new FirefoxOptions();
+			fOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
+			driver = new FirefoxDriver(fOptions);
 			break;
+			
 		case "edge":
+			EdgeOptions eOptions = new EdgeOptions();
+			eOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
 			driver = new EdgeDriver();
 			break;
+			
 		default:
 			throw new RuntimeException("Unsupported browser: " + browserName);
 		}
