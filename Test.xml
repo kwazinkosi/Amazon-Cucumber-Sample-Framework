@@ -1,9 +1,13 @@
 <!-- -->
 <testng>
-    <test name="MyAmazonTestSuite">
-        <classes>
-            <class name="amazon-test-automation.AmazonHomePageTests" />
-            <class name="amazon-test-automation.TodayDealsTests" />
-        </classes>
-    </test>
+	<listeners>
+		<listener class-name="path.to.your.package.MyTestListener" />
+	</listeners>
+
+	<test name="MyAmazonTestSuite">
+		<classes>
+			<class name="amazon-test-automation.AmazonHomePageTests" />
+			<class name="amazon-test-automation.TodayDealsTests" />
+		</classes>
+	</test>
 </testng>

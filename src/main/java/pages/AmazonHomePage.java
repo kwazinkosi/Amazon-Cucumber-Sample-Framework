@@ -31,9 +31,11 @@ public class AmazonHomePage extends Base {
     }
     public void goToAmazon() {
 
-    	log.info("		### Navigating to Amazon homepage. ###");
-        visitPage(getApplicationUrl()); // Using Base class visitPage method
-        log.info("		### Amazon homepage opened successfully. ###");
+    	if (driver.getTitle() =="") {
+    		log.info("		### Navigating to Amazon homepage. ###");
+            visitPage(getApplicationUrl()); // Using Base class visitPage method
+            log.info("		### Amazon homepage opened successfully. ###");
+    	}
     }
 
     public void searchForItem(String item) {

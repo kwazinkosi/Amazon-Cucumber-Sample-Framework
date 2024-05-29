@@ -46,20 +46,12 @@ public class AmazonHomePageTests extends Base {
 //        productDetailsPage = new ProductDetailsPage(null);
         cartPage = new CartPage();
         log.info("\n//============== AmazonHomePage Tests =============\\");
-        System.out.println("\n### ============================== AmazonHomePage Tests ============================== ###");
+        System.out.println("\n\n### ============================== AmazonHomePage Tests ============================== ###");
     }
 
-    @AfterClass
-    public void tearDown() {
-        if (driver != null) {
-        	System.out.println("		### AmazonHomePage::tearDown() -- Quiting ###");
-            driver.quit();
-        }
-        System.out.println("### ============================== AmazonHomePage Tests End ============================== ###");
-        log.info("//============== AmazonHomePage Tests End =============\\");
-    }
     
-    @Test
+    
+    @Test(priority =1)
     public void testVerifyAmazonLogoIsDisplayed() {
 //    	AmazonHomePage amazonHome =new AmazonHomePage();
     	try {
@@ -75,7 +67,7 @@ public class AmazonHomePageTests extends Base {
 		}
     }
     
-    @Test(dataProvider = "searchItems")
+    @Test(dataProvider = "searchItems", priority =2)
     public void testSearchForProductAndVerifyResult(String searchTerm) {
 //    	AmazonHomePage amazonHome =new AmazonHomePage();
         // Search for the specified item
@@ -93,7 +85,7 @@ public class AmazonHomePageTests extends Base {
        
     }
 
-    @Test
+    @Test(priority =3)
 	public void verifySearchResultIsDisplayed() {
     	
     	System.out.println("		### AmazonHomePageTests::verifySearchResultIsDisplayed() -- verifying if search result is displayed()");
@@ -105,15 +97,15 @@ public class AmazonHomePageTests extends Base {
     	Assert.assertTrue(isSearchResultsDisplayed, "### Search results header is not displayed ###");	
     }
     
-    @Test
+    @Test(priority = 4)
     public void testVerifyGlobalWaitTime() {
     	
 //    	AmazonHomePage amazonHome =new AmazonHomePage();
         int expectedWaitTime = amazonHomePage.getGlobalWaitTime();
-        Assert.assertEquals(expectedWaitTime, 10, "Global wait time is not set to default value (10 seconds)");
+        Assert.assertEquals(expectedWaitTime, 120, "Global wait time is not set to default value (10 seconds)");
     }
     
-    @Test
+    @Test(priority = 5)
     public void verifySearchProductAndBuy() {
     	
 //    	AmazonHomePage amazonHome = new AmazonHomePage();

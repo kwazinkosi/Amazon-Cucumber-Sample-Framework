@@ -23,6 +23,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 //import org.testng.annotations.BeforeTest;
 import org.testng.annotations.BeforeSuite;
@@ -35,42 +36,49 @@ public class Base {
 
 	protected final static Logger log = LogManager.getLogger(Base.class);
 	protected static WebDriver driver;
-	
+
 	protected static WebDriverWait wait;
 	protected int timeoutSec = 50; // wait timeout = 50seconds by default
 	protected static Properties props;
 	protected ScreenCapturer screenCapturer;
 
-	public Base(String screenshotDir) {
-
-		
+	public Base(WebDriver driver, String screenshotDir) {
+		this.driver = driver;
 		this.screenCapturer = new ScreenCapturer(screenshotDir);
 		System.out.println("Base() -- done constructing ");
 	}
-	
+
 	@BeforeSuite
 	public static void setupLogging() {
 
 		System.out.println("Base::setupLogging() -- Attempting to configure logger.");
 		String log4jConfigFile = System.getProperty("user.dir") + File.separator + "log4j.properties";
-		System.out.println("Base::setupLogging() -- log4jConfig file is "+ log4jConfigFile);
+		System.out.println("Base::setupLogging() -- log4jConfig file is " + log4jConfigFile);
 		ConfigurationSource source;
-		
+
 		try {
 
 			source = new ConfigurationSource(new FileInputStream(log4jConfigFile));
 			Configurator.initialize(null, source);
 			System.out.println("Base::setupLogging() -- Done configuring logger.");
 		} catch (FileNotFoundException e) {
-		    log.error("Base::setupLogging() -- Failed to find log4j.properties file: " + log4jConfigFile, e); // Log the error with exception details
+			log.error("Base::setupLogging() -- Failed to find log4j.properties file: " + log4jConfigFile, e); 
 		} catch (IOException e) {
-		    log.error("Base::setupLogging() -- Error while configuring logger: " + log4jConfigFile, e); // Log the error with exception details
+			log.error("Base::setupLogging() -- Error while configuring logger: " + log4jConfigFile, e); 
 		}
 	}
-
+	@AfterTest
+    public void tearDown() {
+        if (driver != null) {
+        	System.out.println("		### tearDown() -- Quiting ###");
+            driver.quit();
+        }
+        System.out.println("\n\n### ============================== Tests End ============================== ###");
+        log.info("//============== AmazonHomePage Tests End =============\\");
+    }
+	
 	@BeforeClass
 	public void setupDriver() {
-		
 
 		try {
 //			setupLogging();
@@ -82,35 +90,34 @@ public class Base {
 			e.printStackTrace();
 		}
 
-
 		System.out.println("Base::setupDriver() -- setting up the browser");
 		String browserName = getBrowserName(); // get browser name from properties file
 
 		switch (browserName.toLowerCase()) {
 
 		case "chrome":
-			
+
 			ChromeOptions cOptions = new ChromeOptions();
 			cOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
 //			driver = new ChromeDriver(cOptions);
 			driver = new ChromeDriver();
 			break;
-			
+
 		case "firefox":
-			
+
 			FirefoxOptions fOptions = new FirefoxOptions();
 			fOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
 //			driver = new FirefoxDriver(fOptions);
 			driver = new FirefoxDriver();
 			break;
-			
+
 		case "edge":
 			EdgeOptions eOptions = new EdgeOptions();
 			eOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
 //			driver = new EdgeDriver(eOptions);
 			driver = new EdgeDriver();
 			break;
-			
+
 		default:
 			throw new RuntimeException("Unsupported browser: " + browserName);
 		}
@@ -120,7 +127,7 @@ public class Base {
 	}
 
 	public void click(WebElement element) {
-		pause(1000); //TODO delete this later
+		pause(1000); // TODO delete this later
 		find(element).click();
 	}
 
@@ -131,14 +138,14 @@ public class Base {
 	// take screenshot upon failure
 	public void takeScreenshotOnFailure(String imgType) {
 		try {
-			
+
 			screenCapturer.captureScreenshot(driver, imgType);
-			System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
-            log.info("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
+			System.out.println("		### Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
+			log.info("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 		} catch (IOException e) {
-			
-			log.error("		### Failed to capture screenshot on failure ###", e); // Log the error with exception details
-			System.out.println("		### navigateToTodaysDeals() -- navigation to amazon succesfully! ###");
+
+			log.error("		###  Base::takeScreenshotOnFailure() -- Failed to capture screenshot on failure ###", e); 
+			System.out.println("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 		}
 	}
 
@@ -162,9 +169,9 @@ public class Base {
 	}
 
 	public void visitPage(String url) {
-		
-		log.info("		### visitPage() -- visiting "+url+" ###");
-		System.out.println("		### visitPage() -- visiting "+url+" ###");
+
+		log.info("		### visitPage() -- visiting " + url + " ###");
+		System.out.println("		### visitPage() -- visiting " + url + " ###");
 		driver.manage().deleteAllCookies();
 		driver.get(url);
 	}
@@ -189,9 +196,9 @@ public class Base {
 	public boolean isDisplayed(WebElement element) {
 
 		try {
-			
+
 			System.out.println("		### Base --waiting for element to display. ###");
-        	log.info("		### Base --waiting for element to display. ###");
+			log.info("		### Base --waiting for element to display. ###");
 			wait.until(ExpectedConditions.visibilityOf(element));
 			return true;
 		} catch (TimeoutException e) {

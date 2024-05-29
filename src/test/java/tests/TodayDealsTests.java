@@ -65,7 +65,7 @@ public class TodayDealsTests extends Base {
         todayDeals.goToTodaysDeals(); // Navigate to Today's Deals page using the TodayDeals object
     }
 
-    @Test(priority = 1) // Test case to verify navigation to Electronics category
+    @Test // Test case to verify navigation to Electronics category
     public void verifyNavigationToElectronicsCategory() {
     	
         todayDeals.clickOnElectronicsCategory(); // Click on the Electronics category button/link
