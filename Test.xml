@@ -1,9 +1,5 @@
 <!-- -->
 <testng>
-	<listeners>
-		<listener class-name="path.to.your.package.MyTestListener" />
-	</listeners>
-
 	<test name="MyAmazonTestSuite">
 		<classes>
 			<class name="amazon-test-automation.AmazonHomePageTests" />

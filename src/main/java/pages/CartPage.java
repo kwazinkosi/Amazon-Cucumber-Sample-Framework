@@ -1,8 +1,8 @@
 package pages;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import BaseClass.Base;
 
@@ -21,8 +21,13 @@ public class CartPage extends Base{
 	@FindBy(xpath ="//*[@id=\'sc-subtotal-amount-activecart\']/span")
 	private WebElement subTotalCartAmount;
 	
-    public CartPage() {
-		super("screenshots");
+	
+	private WebDriver driver;
+    public CartPage(WebDriver driver) {
+		
+    	super( "screenshots", driver);
+    	this.driver = driver;
+		initializePageElements();
 	}
 
     // ========== Verification methods =============\\

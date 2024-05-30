@@ -4,8 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 //import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.WebDriver;
 
 import BaseClass.Base;
 
@@ -23,19 +22,21 @@ public class AmazonHomePage extends Base {
     @FindBy(id = "search")
     private WebElement searchResults;
     
-    
-    public AmazonHomePage() {
+    public WebDriver driver;
+    public AmazonHomePage(WebDriver driver) {
     	
-		super("screenshots"); // Call Base class constructor (implicitly calls setupDriver)
-        PageFactory.initElements(driver, this); // Initialize web elements
+		super("screenshots", driver); // Call Base class constructor (implicitly calls setupDriver)
+		initializePageElements();
     }
-    public void goToAmazon() {
+    
+    public void goToAmazon(String baseUrl) {
 
-    	if (driver.getTitle() =="") {
-    		log.info("		### Navigating to Amazon homepage. ###");
-            visitPage(getApplicationUrl()); // Using Base class visitPage method
-            log.info("		### Amazon homepage opened successfully. ###");
-    	}
+		log.info("		### Navigating to Amazon homepage. ###");
+		System.out.println(" getting url ");
+		System.out.println(" url is "+ baseUrl);
+        visitPage(baseUrl); // Using Base class visitPage method
+        log.info("		### Amazon homepage opened successfully. ###");
+
     }
 
     public void searchForItem(String item) {
@@ -44,7 +45,6 @@ public class AmazonHomePage extends Base {
     	System.out.println("		### AmazonHomePage::searchForItem() -- Searching for item: " + item + " ###");
     	typeText(searchBox, item);
         searchBox.sendKeys(Keys.ENTER);
-        wait.until(ExpectedConditions.visibilityOf(searchResults));
         
         log.info("		### AmazonHomePage::searchForItem() -- Search submitted for item: " + item + " ###");
         System.out.println("		### AmazonHomePage::searchForItem() -- Search submitted for item:: " + item + " ###");

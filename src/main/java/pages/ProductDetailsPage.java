@@ -1,5 +1,7 @@
 package pages;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -19,10 +21,13 @@ public class ProductDetailsPage extends Base {
 	private WebElement cart; // visible after adding an item to cart
 	
 	private WebElement product;
-	
-	public ProductDetailsPage(WebElement product) {
+	private WebDriver driver;
+	private String productTitle;
+	public ProductDetailsPage(WebElement product, WebDriver driver) {
 		
-		super("screenshots");
+		super( "screenshots", driver);
+    	this.driver = driver;
+		initializePageElements();
 		this.product = product;	
 	}
 
@@ -55,7 +60,9 @@ public class ProductDetailsPage extends Base {
     // Get the discount percentage
     private String getDiscountPercentage(WebElement discountElement) {
         
-    	return discountElement.getText().replaceAll("%", "");
+    	String discountText = discountElement.getText();
+    	String digitsOnly = discountText.replaceAll("[^0-9]", "");
+    	return digitsOnly;
     }
     
     public int getDiscountValue(WebElement discountElement) {
@@ -88,5 +95,17 @@ public class ProductDetailsPage extends Base {
         }
         System.out.println("		### getProduct() --  product returned successfully ###");
         return this.product;
+    }
+    
+    public void setProductTitle(String title) {
+    	this.productTitle = title;
+    }
+    
+    // Takes a product listing card and extracts the title
+    public String getProductTitle(WebElement productListing) {
+    	
+    	WebElement titleElement =productListing.findElement(By.cssSelector("h2 a span"));
+		String productName = titleElement.getText();
+		return productName;
     }
 }

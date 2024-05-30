@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -21,203 +20,199 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-//import org.testng.annotations.BeforeTest;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 import screenshots.ScreenCapturer;
 import utils.FileManager;
 import utils.WebDriverWaitManager;
+//import utils.TestListener;
 
 public class Base {
 
-	protected final static Logger log = LogManager.getLogger(Base.class);
-	protected static WebDriver driver;
-
-	protected static WebDriverWait wait;
-	protected int timeoutSec = 50; // wait timeout = 50seconds by default
-	protected static Properties props;
+	public final static Logger log = LogManager.getLogger(Base.class);
 	protected ScreenCapturer screenCapturer;
+	protected static WebDriverWait wait;
+	protected static int timeoutSec = 50; // wait timeout = 50seconds by default
+	private static Properties props;
+//    private TestListener listener; // Or private TestListener listener; (depending on approach)
 
-	public Base(WebDriver driver, String screenshotDir) {
-		this.driver = driver;
+	private static WebDriver driver;
+
+	public Base(String screenshotDir, WebDriver driver) {
 		this.screenCapturer = new ScreenCapturer(screenshotDir);
-		System.out.println("Base() -- done constructing ");
+		this.driver = driver;
+		// Removed props and driver from constructor as they are accessed through
+		// TestListener
+	}
+
+	public void initializePageElements() {
+		PageFactory.initElements(driver, this);
+	}
+
+	private static void loadProperties() {
+		if (props == null) {
+			String fileName = "props.properties";
+			try {
+				System.out.println("Loading props.properties file...");
+				props = FileManager.loadProperties(fileName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@BeforeSuite
 	public static void setupLogging() {
-
-		System.out.println("Base::setupLogging() -- Attempting to configure logger.");
+		// Logic for configuring logger (can be kept or moved to a separate utility
+		// class)
 		String log4jConfigFile = System.getProperty("user.dir") + File.separator + "log4j.properties";
 		System.out.println("Base::setupLogging() -- log4jConfig file is " + log4jConfigFile);
-		ConfigurationSource source;
-
 		try {
-
-			source = new ConfigurationSource(new FileInputStream(log4jConfigFile));
+			ConfigurationSource source = new ConfigurationSource(new FileInputStream(log4jConfigFile));
 			Configurator.initialize(null, source);
 			System.out.println("Base::setupLogging() -- Done configuring logger.");
 		} catch (FileNotFoundException e) {
-			log.error("Base::setupLogging() -- Failed to find log4j.properties file: " + log4jConfigFile, e); 
+//            log.error("Failed to find log4j.properties file: " + log4jConfigFile, e);
 		} catch (IOException e) {
-			log.error("Base::setupLogging() -- Error while configuring logger: " + log4jConfigFile, e); 
+//            log.error("Error while configuring logger: " + log4jConfigFile, e);
 		}
 	}
-	@AfterTest
-    public void tearDown() {
-        if (driver != null) {
-        	System.out.println("		### tearDown() -- Quiting ###");
-            driver.quit();
-        }
-        System.out.println("\n\n### ============================== Tests End ============================== ###");
-        log.info("//============== AmazonHomePage Tests End =============\\");
-    }
-	
-	@BeforeClass
-	public void setupDriver() {
 
-		try {
-//			setupLogging();
-			String fileName = "props.properties";
-			Base.props = loadProperties(fileName);
-//			setupDriver();
-		} catch (IOException e) {
-			log.error("		### Base() -- logging configuration failed");
-			e.printStackTrace();
-		}
+//	@BeforeTest
+	public static  WebDriver setupDriver() {
 
-		System.out.println("Base::setupDriver() -- setting up the browser");
-		String browserName = getBrowserName(); // get browser name from properties file
 
+		loadProperties();
+		String browserName = getBrowserName();
+		driver = createWebDriver(browserName);
+		driver.manage().window().maximize();
+		driver.manage().deleteAllCookies();
+		wait = WebDriverWaitManager.createWebDriverWait(driver, timeoutSec);
+		System.out.println("Done setting up WebDriver.");
+		return driver;
+	}
+
+	private static WebDriver createWebDriver(String browserName) {
 		switch (browserName.toLowerCase()) {
-
 		case "chrome":
-
 			ChromeOptions cOptions = new ChromeOptions();
-			cOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
-//			driver = new ChromeDriver(cOptions);
-			driver = new ChromeDriver();
-			break;
-
+			// Uncomment for headless mode
+			// cOptions.addArguments("--headless", "--disable-gpu",
+			// "--ignore-certificate-errors");
+			return new ChromeDriver();
 		case "firefox":
-
 			FirefoxOptions fOptions = new FirefoxOptions();
-			fOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
-//			driver = new FirefoxDriver(fOptions);
-			driver = new FirefoxDriver();
-			break;
-
+			// Uncomment for headless mode
+			// fOptions.addArguments("--headless", "--disable-gpu",
+			// "--ignore-certificate-errors");
+			return new FirefoxDriver(fOptions);
 		case "edge":
 			EdgeOptions eOptions = new EdgeOptions();
-			eOptions.addArguments("--headless", "--disable-gpu", "--ignore-certificate-errors");
-//			driver = new EdgeDriver(eOptions);
-			driver = new EdgeDriver();
-			break;
-
+			// Uncomment for headless mode
+			// eOptions.addArguments("--headless", "--disable-gpu",
+			// "--ignore-certificate-errors");
+			return new EdgeDriver(eOptions);
 		default:
 			throw new RuntimeException("Unsupported browser: " + browserName);
 		}
-
-		driver.manage().window().maximize();
-		wait = WebDriverWaitManager.createWebDriverWait(driver, timeoutSec);
 	}
 
 	public void click(WebElement element) {
-		pause(1000); // TODO delete this later
 		find(element).click();
 	}
 
-	public static Properties loadProperties(String fileName) throws IOException {
-		return FileManager.loadProperties(fileName); // Using the static method from FileReader
-	}
+	public void takeScreenshotOnFailure(String imgType) throws IOException {
 
-	// take screenshot upon failure
-	public void takeScreenshotOnFailure(String imgType) {
 		try {
 
-			screenCapturer.captureScreenshot(driver, imgType);
+			screenCapturer.captureScreenshot(this.driver, imgType);
 			System.out.println("		### Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 			log.info("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 		} catch (IOException e) {
 
-			log.error("		###  Base::takeScreenshotOnFailure() -- Failed to capture screenshot on failure ###", e); 
+			log.error("		###  Base::takeScreenshotOnFailure() -- Failed to capture screenshot on failure ###", e);
 			System.out.println("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 		}
 	}
 
-	// get the Url of page
-	public String getApplicationUrl() {
-		return props.getProperty("appUrl");
-	}
-
-	// get browser name from properties file or configuration
-	public String getBrowserName() {
-		return props.getProperty("browser");
-	}
-
-	public int getGlobalWaitTime() {
-		return Integer.parseInt(props.getProperty("globalWaitTime", "50")); // Set default if not present
-	}
-
-	// =============== Getters and Setters ================\\
-	public void setTimeOutSec(int timeoutSec) {
-		this.timeoutSec = timeoutSec;
-	}
-
 	public void visitPage(String url) {
 
-		log.info("		### visitPage() -- visiting " + url + " ###");
-		System.out.println("		### visitPage() -- visiting " + url + " ###");
+		WebDriver driver = getDriver();
+		String logMessage = "### Base::visitPage() -- Visiting " + url;
+		log.info(logMessage);
+		System.out.println(logMessage);
 		driver.manage().deleteAllCookies();
 		driver.get(url);
 	}
 
 	public WebElement find(WebElement element) {
+
 		try {
-			// Since the element is already located by @FindBy, we just wait for it to be
-			// present
 			return wait.until(ExpectedConditions.visibilityOf(element));
 		} catch (TimeoutException | NoSuchElementException e) {
-			log.error("Element not found: " + element, e);
-			throw e; // Re-throw the exception for handling in test cases
+			System.out.println("		### Base::find() -- Element not found: " + element);
+			log.error("		### Base::find() -- Element not found: " + element, e);
+			throw e;
 		}
 	}
 
 	public void typeText(WebElement element, String text) {
-		WebElement webElement = find(element); // Wait for the element to be visible
-		webElement.clear(); // Clear the field before typing
-		webElement.sendKeys(text); // Send the text to the element
+		WebElement webElement = find(element);
+		webElement.clear();
+		webElement.sendKeys(text);
 	}
 
 	public boolean isDisplayed(WebElement element) {
-
 		try {
-
-			System.out.println("		### Base --waiting for element to display. ###");
-			log.info("		### Base --waiting for element to display. ###");
 			wait.until(ExpectedConditions.visibilityOf(element));
+			System.out.println("		### Base::isDisplayed() -- Element is displayed ");
 			return true;
 		} catch (TimeoutException e) {
-			log.warn("Timeout of {} wait for {}", timeoutSec, element);
+
+			System.out.println("		### Base::isDisplayed() -- Element NOT displayed ");
+			log.warn("Timeout waiting for element: " + element);
 			return false;
 		}
 	}
 
-	public void pause(int timesec) {
+	public void waitTillClickable(WebElement element) {
+
 		try {
-			Thread.sleep(timesec);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			wait.until(ExpectedConditions.elementToBeClickable(element));
+			System.out.println("		### Base::isClickable() -- Element is displayed ");
+		} catch (TimeoutException e) {
+
+			log.warn("Timeout waiting for element: " + element);
+			System.out.println("		### Base::isClickable() -- Element is NOT displayed ");
 		}
 	}
 
-	public static WebDriver getDriver() {
+//    public void setTestListener(TestListener listener) {
+//        this.listener = listener;
+//    }
 
-		return driver;
+	public void setWaitTimeout(int timeout) {
+		timeoutSec = timeout;
+	}
+
+	public WebDriverWait getWait() {
+		return wait;
+	}
+
+	public WebDriver getDriver() {
+		return this.driver;
+	}
+
+	private static String getBrowserName() {
+		return props.getProperty("browser");
+	}
+
+	public String getUrl() {
+		return props.getProperty("appUrl");
 	}
 }
