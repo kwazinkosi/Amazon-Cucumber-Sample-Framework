@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 
 public class SearchResultsPage extends Base {
 
@@ -22,6 +23,8 @@ public class SearchResultsPage extends Base {
 	
 	@FindBy(id = ".s-result-list.s-search-results")
 	private WebElement searchResults;
+	@FindBy(xpath ="//*[@id='search']")
+	private WebElement searchPage;
 	
 	@FindBy(id = "twotabsearchtextbox")
 	private WebElement searchBox;
@@ -45,14 +48,7 @@ public class SearchResultsPage extends Base {
 				searchForItem(itemName); //navigate to search page
 		}
 		
-		else {
-				log.error("		### SearchResultsPage::selectItemWithDiscount() -- Search box not available " );
-				System.out.println("		### SearchResultsPage::selectItemWithDiscount() -- Search box not available ");
-				// throw error
-				return null;
-		}
-		
-		ProductDetailsPage productPage = new ProductDetailsPage(null, driver);
+		ProductDetailsPage productPage = new ProductDetailsPage(null, DriverFactory.getDriver());
 		WebElement temp = null;
 		for (WebElement productElement : productListings) {
 
@@ -106,7 +102,7 @@ public class SearchResultsPage extends Base {
 	// check if on search page
 	public boolean isSearch() {
 
-		if (isDisplayed(searchResults)) {
+		if (searchPage.isDisplayed()) {
 			return true;
 		}
 		return false;

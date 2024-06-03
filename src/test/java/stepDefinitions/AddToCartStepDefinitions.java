@@ -42,7 +42,8 @@ public class AddToCartStepDefinitions{
 	public void i_search_for(String product) {
 		
 		homePage.searchForItem(product);
-		Assert.assertTrue(searchPage.isSearch(), "This is not the search results page");
+		boolean isSearchPage = searchPage.isSearch();
+		Assert.assertTrue(isSearchPage, "This is not the search results page");
 		System.out.println("		###SearchSteps::i_search_for(String product) -- PASSED!! ###");
 	}
 	 
@@ -50,7 +51,8 @@ public class AddToCartStepDefinitions{
 	public void i_click_on_the_button(String addToCart, String item) {
 		
 		ProductDetailsPage productItem = searchPage.selectItemWithDiscount(item, 0); // after this line we are in the productDetailsPage
-		Assert.assertTrue(productItem.isProductPage(), "Not on product page");
+		boolean isProductPage =productItem.isProductPage();
+		Assert.assertTrue(isProductPage, "Not on product page");
 		productItem.addToCart(0, productItem);
 		
 		product.setProduct(productItem.getProduct());
@@ -63,12 +65,14 @@ public class AddToCartStepDefinitions{
 		
 		product.goToCart();
 		Assert.assertTrue(cartPage.isCartPage(), "This is not the cart page");
+		System.out.println("		###SearchSteps:: the_product_should_be_added_to_my_cart() -- PASSED!! ###");	
 	}
 
 	@Given("I have an item in my cart")
 	public void i_have_an_item_in_my_cart() {
 		
 		Assert.assertTrue(cartPage.isCartPage(), "This is not the cart page");
+		System.out.println("		###SearchSteps:: i_have_an_item_in_my_cart() -- PASSED!! ###");	
 	}
 
 	@When("I navigate to the cart page")
