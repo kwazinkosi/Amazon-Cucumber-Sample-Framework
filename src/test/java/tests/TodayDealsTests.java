@@ -2,6 +2,7 @@ package tests;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,10 +14,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 import pages.AmazonHomePage;
 import pages.ProductDetailsPage;
 import pages.SearchResultsPage;
 import pages.TodayDealsPage;
+import screenshots.ScreenCapturer;
+import utils.FileManager;
 import utils.NavigateToSite;
 //import utils.TestListener;
 
@@ -39,10 +43,14 @@ public class TodayDealsTests {
     
     @FindBy(xpath = "//*[@id='slot-2']/div/h1")
     private WebElement dealsPage;
+    By discValue = By.xpath(".//span[contains(text(), '% off')]");
     
     private AmazonHomePage amazonHomePage;
     private ProductDetailsPage productDetails;
-    
+    private DriverFactory driverFactory;
+	private FileManager fileManager;
+	private ScreenCapturer screenCapturer;
+	Properties props;
 //    TestListener listener;
     
     // Setup before running any tests
@@ -50,10 +58,21 @@ public class TodayDealsTests {
     public void setUp() {
        
         Base.setupLogging();
-        this.driver = Base.setupDriver();
-        this.todayDeals = new TodayDealsPage(driver); // Create the TodayDealsPage object
-        this.amazonHomePage = new AmazonHomePage(driver);
-        this.productDetails = new ProductDetailsPage(null, driver);
+//        this.driver = Base.setupDriver();
+        try {
+			props = FileManager.loadProperties("props.properties");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        String browserName =props.getProperty("browser");
+		driverFactory = new DriverFactory();
+		driver = driverFactory.initDriver(browserName);
+		
+        this.todayDeals = new TodayDealsPage(DriverFactory.getDriver()); // Create the TodayDealsPage object
+        this.amazonHomePage = new AmazonHomePage(DriverFactory.getDriver());
+        this.productDetails = new ProductDetailsPage(null, DriverFactory.getDriver());
         Base.log.info("### ============================== TodayDealsTests ============================== ###");
         System.out.println("### ============================== TodayDealsTests ============================== ###");
     }
@@ -64,9 +83,9 @@ public class TodayDealsTests {
     	try {
     		
     		System.out.println("		### navigateToTodaysDeals() -- Trying to navigate to amazon ###");
-    		String url = todayDeals.getUrl();
+    		String url = props.getProperty("appUrl");
     		System.out.println(" getting url:  "+url);
-		    NavigateToSite.navigateToAmazon(url, driver);
+		    NavigateToSite.navigateToAmazon(url, DriverFactory.getDriver());
 	        Assert.assertTrue(amazonHomePage.verifyLogoIsDisplayed(), "Amazon logo is displayed on homepage");
 	        System.out.println("		### navigateAmazon() -- navigation to amazon succesfully! ###");
 	        Base.log.info("		### navigateAmazon() -- navigation to amazon succesfully! ###");
@@ -74,7 +93,7 @@ public class TodayDealsTests {
 	        TodayDealsPage deals =todayDeals.goToTodaysDeals(); // Navigate to Today's Deals page using the TodayDeals object
 	        String title = deals.getTitle();
 	        
-	        Assert.assertEquals(title =="Today's Deals", true);
+	        Assert.assertEquals(title.toLowerCase().contains("today's deals"), true);
 	        System.out.println("		### navigateToTodaysDeals() -- Deals page displayed succesfully! ###");
 	        Base.log.info("		### navigateToTodaysDeals() -- Deals page displayed succesfully! ###");
 	        
@@ -109,7 +128,7 @@ public class TodayDealsTests {
     
     @Test(priority = 3) // Test case to check for a product with discount 50% or more
     public void verifyProductsDiscounted() {
-        WebElement productElement = driver.findElement(By.xpath(".//span[contains(text(), '% off')]"));
+        WebElement productElement = driver.findElement(discValue);
         productDetails.setProduct(productElement);
         int discountValue = productDetails.getDiscountValue(productElement);
         
@@ -121,28 +140,20 @@ public class TodayDealsTests {
     @Test(priority = 4)
     public void testTodaysDealsElectronics() {
     	
-    	SearchResultsPage  searchResults = new SearchResultsPage(driver);
+    	SearchResultsPage  searchResults = new SearchResultsPage(DriverFactory.getDriver());
     	ProductDetailsPage ipadDetails = searchResults.findProduct("Ipad");
 //    	ipadDetails.
     	String title = ipadDetails.getProductTitle();
-    	Assert.assertTrue(title.contains("ipad"));
+    	Assert.assertTrue(title.toLowerCase().contains("ipad"));
     	System.out.println("		### testTodaysDealsElectronics() -- test PASSED! ###");
    		Base.log.info("		### testTodaysDealsElectronics() -- test PASSED! ###");
-//        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().find(ipad);
+
     }
 
-//    @Test(priority = 5)
-//    public void testFindDiscountedProducts() {
-//    	
-//        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().findDiscountedProducts(50); 
-//    
-//    }
-    
-    
     
     @AfterTest // Cleanup after all tests
     public void tearDown() {
-    	if(driver != null) {
+    	if(DriverFactory.getDriver()!= null) {
     		driver.quit(); // Close the browser (assuming you want to quit after all tests)
     	}
     }

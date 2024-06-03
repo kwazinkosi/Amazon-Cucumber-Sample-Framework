@@ -87,7 +87,7 @@ public class SearchResultsPage extends Base {
 			System.out.println("Couldn't find item: " + itemName);
 			return null;
 		}
-		click(temp);
+		click(temp); //go to productDetails page
 		return productPage;	
 	}
 
@@ -111,7 +111,9 @@ public class SearchResultsPage extends Base {
 		}
 		return false;
 	}
-
+	public List<WebElement> getSearchProducts(){
+		return productListings;
+	}
 	// Find item
 	public ProductDetailsPage findProduct(String itemName) {
 

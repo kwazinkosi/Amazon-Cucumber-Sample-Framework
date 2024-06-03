@@ -40,18 +40,20 @@ public class Base {
 //    private TestListener listener; // Or private TestListener listener; (depending on approach)
 
 	private static WebDriver driver;
+	static FileManager fileManager;
 
 	public Base(String screenshotDir, WebDriver driver) {
 		this.screenCapturer = new ScreenCapturer(screenshotDir);
-		// Removed props and driver from constructor as they are accessed through
-		// TestListener
+		this.driver =driver; //TODO: to remove this
+		wait = WebDriverWaitManager.createWebDriverWait(driver, timeoutSec);
 	}
 
 	public void initializePageElements() {
 		PageFactory.initElements(driver, this);
 	}
 
-	private static void loadProperties() {
+	public static void loadProperties() {
+//		 fileManager = new  FileManager();
 		if (props == null) {
 			String fileName = "props.properties";
 			try {
@@ -81,7 +83,7 @@ public class Base {
 	}
 
 //	@BeforeTest
-	public static  WebDriver setupDriver() {
+	/*public static  WebDriver setupDriver() {
 
 
 		loadProperties();
@@ -93,7 +95,7 @@ public class Base {
 		System.out.println("Done setting up WebDriver.");
 		return driver;
 	}
-
+*/
 	private static WebDriver createWebDriver(String browserName) {
 		switch (browserName.toLowerCase()) {
 		case "chrome":
@@ -139,7 +141,6 @@ public class Base {
 
 	public void visitPage(String url) {
 
-		WebDriver driver = getDriver();
 		String logMessage = "### Base::visitPage() -- Visiting " + url;
 		log.info(logMessage);
 		System.out.println(logMessage);
@@ -189,10 +190,6 @@ public class Base {
 			System.out.println("		### Base::isClickable() -- Element is NOT displayed ");
 		}
 	}
-
-//    public void setTestListener(TestListener listener) {
-//        this.listener = listener;
-//    }
 
 	public void setWaitTimeout(int timeout) {
 		timeoutSec = timeout;

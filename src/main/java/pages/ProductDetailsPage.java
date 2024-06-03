@@ -26,6 +26,9 @@ public class ProductDetailsPage extends Base {
 	@FindBy(css = "[data-cy='title-recipe'] h2 a span")
 	private WebElement title;
 	
+	@FindBy(xpath = "//*[@id='title_feature_div']")
+	private WebElement pTitle;
+	
 	@FindBy(css = "[data-cy='price-recipe']  .a-letter-space~span")
 	private WebElement productDiscount;
 	
@@ -55,7 +58,7 @@ public class ProductDetailsPage extends Base {
 //        	Actions action =new Actions(getDriver());
 //        	action.scrollByAmount(0, 500).perform();
 //        	action.scrollToElement(addToCartButton).perform();
-        	JavascriptExecutor js = (JavascriptExecutor) getDriver(); js.executeScript("window.scrollBy(0,1000)");
+        	JavascriptExecutor js = (JavascriptExecutor) getDriver(); js.executeScript("window.scrollBy(0,200)");
         	click(addToCartButton);
       
             // check if the proceedToCart element is displayed
@@ -118,6 +121,13 @@ public class ProductDetailsPage extends Base {
     	
     	//discount init
     	this.discountValue = Integer.parseInt(productDiscount.getText().replaceAll("[^0-9]", ""));	
+    }
+    
+    public boolean isProductPage() {
+    	if(pTitle.isDisplayed()) {
+    		return true;
+    	}
+    	return false;
     }
     
     public boolean isSliderDisplayed() {

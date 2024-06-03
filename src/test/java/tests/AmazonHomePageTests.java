@@ -2,11 +2,14 @@ package tests;
 
 import pages.ProductDetailsPage;
 import pages.SearchResultsPage;
+import screenshots.ScreenCapturer;
+import utils.FileManager;
 //import pages.TodayDealsPage;
 import utils.NavigateToSite;
 //import utils.TestListener;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +20,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 import pages.AmazonHomePage;
 import pages.CartPage;
 
@@ -27,8 +31,11 @@ public class AmazonHomePageTests {
 //    private ProductDetailsPage productDetailsPage;
 	private CartPage cartPage;
 	private WebDriver driver;
-//    TestListener listener;
-
+	private DriverFactory driverFactory;
+//	private FileManager fileManager;
+//	private ScreenCapturer screenCapturer;
+	Properties props;
+	
 	@DataProvider(name = "searchItems")
 	public Object[][] testData() {
 		return new Object[][] { { "headphones" },
@@ -41,9 +48,20 @@ public class AmazonHomePageTests {
 	public void setup() {
 
 		Base.setupLogging();
-		this.driver = Base.setupDriver();
-		amazonHomePage = new AmazonHomePage(driver);
-		searchResultsPage = new SearchResultsPage(driver);
+//		this.driver = Base.setupDriver();
+		try {
+			props = FileManager.loadProperties("props.properties");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String browserName = props.getProperty("browser");
+		driverFactory = new DriverFactory();
+		driver =driverFactory.initDriver(browserName);
+
+		amazonHomePage = new AmazonHomePage(DriverFactory.getDriver());
+		searchResultsPage = new SearchResultsPage(DriverFactory.getDriver());
 //        productDetailsPage = new ProductDetailsPage(null);
 		cartPage = new CartPage(driver);
 		Base.log.info("\n//============== AmazonHomePage Tests =============\\");
@@ -60,19 +78,18 @@ public class AmazonHomePageTests {
 			System.out
 					.println("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- testing logo ###");
 
-			String url = amazonHomePage.getUrl();
+			String url = props.getProperty("appUrl");
 
-			NavigateToSite.navigateToAmazon(url, driver);
+			NavigateToSite.navigateToAmazon(url, DriverFactory.getDriver());
 			boolean isLogoDisplayed = amazonHomePage.verifyLogoIsDisplayed();
 			Assert.assertTrue(isLogoDisplayed, "Amazon logo is not displayed on homepage");
 			Base.log.info("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- logo displayed ###");
-
+			System.out.println("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- logo displayed ###");         
+		
 		} catch (Exception e) {
-			System.out
-					.println("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
+			System.out.println("		### AmazonHomePage::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
 			amazonHomePage.takeScreenshotOnFailure("LOGO-testFailure_"); // capture screen
-			Base.log.error(
-					"		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
+			Base.log.error("		### AmazonHomePageTests::testVerifyAmazonLogoIsDisplayed() -- logo display failed ###");
 			throw e;
 		}
 	}
@@ -103,8 +120,8 @@ public class AmazonHomePageTests {
 	public void testSearchForProductAndVerifyResult(String searchTerm) {
 //    	AmazonHomePage amazonHome =new AmazonHomePage();
 		// Search for the specified item
-		String url = amazonHomePage.getUrl();
-		NavigateToSite.navigateToAmazon(url, driver);
+		String url =  props.getProperty("appUrl");
+		NavigateToSite.navigateToAmazon(url, DriverFactory.getDriver());
 		amazonHomePage.searchForItem(searchTerm);
 
 		// Verify that the search box is displayed
@@ -127,8 +144,8 @@ public class AmazonHomePageTests {
 				"		### AmazonHomePage::verifySearchResultIsDisplayed() -- verifying if search result is displayed()");
 
 		if (!amazonHomePage.verifySearchBoxIsDisplayed()) {
-			String url = amazonHomePage.getUrl();
-			NavigateToSite.navigateToAmazon(url, driver);
+			String url = props.getProperty("appUrl");
+			NavigateToSite.navigateToAmazon(url, DriverFactory.getDriver());
 		}
 
 		amazonHomePage.searchForItem("ipad");
@@ -144,7 +161,8 @@ public class AmazonHomePageTests {
 //    	CartPage cart =new CartPage();
 		String item = "ipad";
 		// Find the product in the searchResults
-		System.out.println("		### AmazonHomePageTests::verifySearchProductAndBuy() -- searching for item: " + item);
+		System.out
+				.println("		### AmazonHomePageTests::verifySearchProductAndBuy() -- searching for item: " + item);
 		ProductDetailsPage product = searchResultsPage.findProduct(item);
 		Assert.assertEquals(product.getProductTitle().toLowerCase().contains(item), true);
 		// Add product to cartproductPage.getDiscountValue(discountElement)
@@ -154,7 +172,8 @@ public class AmazonHomePageTests {
 			// proceed to checkout
 			cartPage.proceedToCheckout();
 			By authPage = By.id("authportal-main-section");
-			boolean isAuthPage = cartPage.getWait().until(ExpectedConditions.presenceOfElementLocated(authPage)) != null;
+			boolean isAuthPage = cartPage.getWait()
+					.until(ExpectedConditions.presenceOfElementLocated(authPage)) != null;
 			Assert.assertTrue(isAuthPage == true, "This is not the auth page");
 		}
 	}

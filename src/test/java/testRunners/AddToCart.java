@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/resources/features/AddToCart.feature", glue = {"stepDefinitions"}, plugin = { "pretty",
+@CucumberOptions(features = "src/test/resources/features/AddToCart.feature", glue = {"stepDefinitions", "hooks"}, plugin = { "pretty",
 		"html:target/results.html" }, dryRun = false)
 public class AddToCart {
 

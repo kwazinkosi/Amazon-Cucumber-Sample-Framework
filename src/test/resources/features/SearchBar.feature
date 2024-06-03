@@ -9,6 +9,5 @@ Background:
 	Then User is landed to the searchResults page
 	
 	Scenario: User is is unable to successfully search an unrecognizable product
-	When User enters unrecognizable text
-	Then User enters ProductName "atchar" and clicked on Search Button or pressed enter
+	When User enters unrecognizable ProductName "artchar" and clicked on Search Button or pressed enter
 	Then User is landed to the searchResults page with no results outcome

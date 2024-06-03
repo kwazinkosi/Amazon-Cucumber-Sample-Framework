@@ -7,6 +7,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources/features/SearchBar.feature", glue = {"stepDefinitions", "hooks"}, plugin = { "pretty",
-		"html:target/results.html" }, dryRun = false)
+		"html:target/results.html" }, dryRun = false) // instead of html, use extentReports
 public class AmazonSearch {
 }

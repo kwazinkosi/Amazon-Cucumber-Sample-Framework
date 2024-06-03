@@ -28,10 +28,11 @@ public class AmazonHomePage extends Base {
     @FindBy(css = ".nav-search-dropdown > option[selected ='selected'][value='search-alias=aps'")
 	private List<WebElement> categoryDropdown; // when on Home dropdown="All categories"
     
-    public WebDriver driver;
+    private WebDriver driver;
     public AmazonHomePage(WebDriver driver) {
     	
 		super("screenshots", driver); // Call Base class constructor (implicitly calls setupDriver)
+		this.driver = driver;
 		initializePageElements();
     }
     
@@ -57,9 +58,14 @@ public class AmazonHomePage extends Base {
         // TODO: return searchResultsPage instead
     }
     
+    public String getHomePageTitle() {
+    	
+    	return driver.getTitle();
+    }
+    
     public boolean verifyLogoIsDisplayed() {
     	
-    	boolean isDisplayed = isDisplayed(amazonLogo);
+    	boolean isDisplayed = amazonLogo.isDisplayed();
         if (isDisplayed) {
         	System.out.println("		### AmazonHomePage::verifyLogoIsDisplayed() -- Logo is displayed ###");
             log.info("		### AmazonHomePage::verifyLogoIsDisplayed() -- Logo is displayed. ###");
@@ -72,8 +78,8 @@ public class AmazonHomePage extends Base {
 
     public boolean verifySearchBoxIsDisplayed() {
     	
-    	boolean isDisplayed = isDisplayed(searchBox);
-        if (isDisplayed) {
+    	boolean isDisplayed = searchBox.isDisplayed();
+    	if (isDisplayed) {
             
         	 System.out.println("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Logo is displayed ###");
         	 log.info("		### AmazonHomePage::verifySearchBoxIsDisplayed() -- Search box is displayed. ###");

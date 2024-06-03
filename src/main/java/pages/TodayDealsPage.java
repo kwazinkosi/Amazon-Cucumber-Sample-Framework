@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 public class TodayDealsPage extends Base {
 	 
     @FindBy(xpath = "//a[@href='/deals?ref_=nav_cs_gb']") // XPath for better reliability
@@ -47,7 +48,7 @@ public class TodayDealsPage extends Base {
     }
 
     public boolean isDiscounted50OrMore(WebElement discountElement) {
-    	ProductDetailsPage productDetails =new ProductDetailsPage(discountElement, getDriver());
+    	ProductDetailsPage productDetails =new ProductDetailsPage(discountElement, DriverFactory.getDriver());
     	int discountValue = productDetails.getDiscountValue(discountElement);
         return discountValue >= 50;
     }
@@ -78,15 +79,6 @@ public class TodayDealsPage extends Base {
     	int discountValue = Integer.parseInt(getDiscountPercentage(element));
         return discountValue;
     }
-    /*private int getDiscountFromProductCard(WebElement productCard) {
-        return productCard.findElements(By.xpath(".//span[contains(text(), '% off')]"))
-                .stream()
-                .findFirst()
-                .map(this::getDiscountPercentage)
-                .map(Integer::parseInt)
-                .orElse(0);
-    }
-*/
     
     public boolean isCurrentCategoryElectronics() {
     	

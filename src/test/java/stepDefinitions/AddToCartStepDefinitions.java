@@ -1,10 +1,13 @@
 package stepDefinitions;
 
+import java.util.Properties;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 import hooks.AmazonHooks;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -18,29 +21,21 @@ public class AddToCartStepDefinitions{
 
 	//	AmazonHomePage homePage;
 	WebDriver driver;
-
-//	public AddToCartStepDefinitions(String screenshotDir, WebDriver driver) {
-//		super("screenshots", driver);
-//		// TODO Auto-generated constructor stub
-//	}
-
-	//	public AddToCartStepDefinitions(AmazonHooks amazonHooks) {
-	//        this.driver = amazonHooks.getDriver();
-	//    }
-	AmazonHomePage homePage;
-	SearchResultsPage searchPage;
+	AmazonHomePage homePage = new AmazonHomePage(DriverFactory.getDriver());
+	SearchResultsPage searchPage =new SearchResultsPage(DriverFactory.getDriver());
+	Properties props;
+	
 	ProductDetailsPage product;
 	CartPage cartPage;
 	
 	@Given("I am on the Amazon website")
 	public void i_am_on_the_amazon_website() {
-		driver =new ChromeDriver();
-		homePage =new AmazonHomePage(driver);
-		String url = homePage.getUrl();
+		
+		String url = "https://amazon.in";
 		homePage.visitPage(url);
-	    System.out.println("step 1");
-//	    Assert.assertTrue(homePage.verifyLogoIsDisplayed(), "Logo is not displayed, page still loading");
-//		Assert.assertTrue(homePage.verifySearchBoxIsDisplayed());
+		Assert.assertTrue(homePage.verifyLogoIsDisplayed(), "Logo is not displayed, page still loading");
+		Assert.assertTrue(homePage.verifySearchBoxIsDisplayed());
+		System.out.println("		###SearchSteps::user_is_on_the_home_or_any_page_with_search_bar() -- PASSED!! ###");
 	}
 	
 
@@ -48,41 +43,47 @@ public class AddToCartStepDefinitions{
 	public void i_search_for(String product) {
 		
 		System.out.println("step 1");
-//		homePage.searchForItem(product);
-//		Assert.assertTrue(searchPage.isSearch(), "This is not the search results page");
+		homePage.searchForItem(product);
+		Assert.assertTrue(searchPage.isSearch(), "This is not the search results page");
+		
+		System.out.println("		###SearchSteps::i_search_for(String product) -- PASSED!! ###");
 	}
 
-	@When("I click on the {string} button, the product should be added to my cart")
-	public void i_click_on_the_button(String addToCart) {
+	@When("I click on the {string} button, the product {string} should be added to my cart")
+	public void i_click_on_the_button(String addToCart, String item) {
 		
-		Assert.assertTrue(product.isSliderDisplayed(), "The slider is not displayed");
-		product.addToCart(0, product);
+		ProductDetailsPage productItem = searchPage.selectItemWithDiscount(item, 0); // after this line we are in the productDetailsPage
+		Assert.assertTrue(productItem.isProductPage(), "Not on product page");
+		productItem.addToCart(0, productItem);
 		
+		product.setProduct(productItem.getProduct());
+		Assert.assertTrue(productItem.isSliderDisplayed(), "The slider is not displayed");
+		System.out.println("		###SearchSteps:: i_click_on_the_button(String addToCart) -- PASSED!! ###");	
 	}
 
 	@Then("the product should be added to my cart")
 	public void the_product_should_be_added_to_my_cart() {
-		System.out.println("step 4");
+		
 		product.goToCart();
 		Assert.assertTrue(cartPage.isCartPage(), "This is not the cart page");
 	}
 
 	@Given("I have an item in my cart")
 	public void i_have_an_item_in_my_cart() {
-		System.out.println("step 1");
+		
 		Assert.assertTrue(cartPage.isCartPage(), "This is not the cart page");
 	}
 
 	@When("I navigate to the cart page")
 	public void i_navigate_to_the_cart_page() {
-		System.out.println("step 5");
+		
 		product.goToCart();
 		Assert.assertTrue(cartPage.isCartPage(), "This is not the cart page");
 	}
 
 	@When("I click on the {string} button for the item {string}")
 	public void i_click_on_the_button_for_the_item(String remove, String item) {
-		System.out.println("step 6");
+		
 		boolean isInCart = cartPage.verifyItemInCart(item);
 		Assert.assertTrue(isInCart, "The product is in the cart");
 	}
