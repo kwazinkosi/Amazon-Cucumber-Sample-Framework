@@ -3,12 +3,9 @@ package stepDefinitions;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-
-import BaseClass.Base;
 import factory.DriverFactory;
-import hooks.AmazonHooks;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -39,7 +36,7 @@ public class AddToCartStepDefinitions{
 	}
 	
 
-	@Given("I search for {string} and select the first search result")
+	@When("I search for {string} and select the first search result")
 	public void i_search_for(String product) {
 		
 		System.out.println("step 1");
@@ -48,8 +45,8 @@ public class AddToCartStepDefinitions{
 		
 		System.out.println("		###SearchSteps::i_search_for(String product) -- PASSED!! ###");
 	}
-
-	@When("I click on the {string} button, the product {string} should be added to my cart")
+	 
+	@And("I click on the {string} button, the product {string} should be added to my cart")
 	public void i_click_on_the_button(String addToCart, String item) {
 		
 		ProductDetailsPage productItem = searchPage.selectItemWithDiscount(item, 0); // after this line we are in the productDetailsPage

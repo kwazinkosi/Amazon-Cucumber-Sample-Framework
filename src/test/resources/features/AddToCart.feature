@@ -7,8 +7,8 @@ Background:
   Given I am on the Amazon website
 
 Scenario: Add a product to the cart
-  Given I search for "iPad" and select the first search result
-  And I click on the "Add to Cart" button, the product should be added to my cart
+  When I search for "iPad" and select the first search result
+  And I click on the "Add to Cart" button, the product "iPad" should be added to my cart
   Then the product should be added to my cart
 
 Scenario: Remove a product from the cart

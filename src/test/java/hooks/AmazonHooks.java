@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
 
-import BaseClass.Base;
 import factory.DriverFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -55,7 +54,7 @@ public class AmazonHooks{
 //			take screenshot
 			try {
 
-				screenCapturer.captureScreenshot(this.driver, scenario.getName());
+				screenCapturer.captureScreenshot(DriverFactory.getDriver(), scenario.getName());
 				System.out.println("		### Hook::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 //				log.info("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 			} catch (IOException e) {

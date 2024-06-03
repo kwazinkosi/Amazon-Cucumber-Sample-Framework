@@ -2,7 +2,6 @@ package tests;
 
 import pages.ProductDetailsPage;
 import pages.SearchResultsPage;
-import screenshots.ScreenCapturer;
 import utils.FileManager;
 //import pages.TodayDealsPage;
 import utils.NavigateToSite;
