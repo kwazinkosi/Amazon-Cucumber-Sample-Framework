@@ -3,6 +3,7 @@ package stepDefinitions;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import factory.DriverFactory;
 import io.cucumber.java.en.And;
@@ -30,7 +31,8 @@ public class AddToCartStepDefinitions{
 		
 		String url = "https://amazon.in";
 		homePage.visitPage(url);
-		Assert.assertTrue(homePage.verifyLogoIsDisplayed(), "Logo is not displayed, page still loading");
+		boolean isDiplayed =homePage.verifyLogoIsDisplayed();
+		Assert.assertTrue(isDiplayed, "Logo is not displayed, page still loading");
 		Assert.assertTrue(homePage.verifySearchBoxIsDisplayed());
 		System.out.println("		###SearchSteps::user_is_on_the_home_or_any_page_with_search_bar() -- PASSED!! ###");
 	}
@@ -39,10 +41,8 @@ public class AddToCartStepDefinitions{
 	@When("I search for {string} and select the first search result")
 	public void i_search_for(String product) {
 		
-		System.out.println("step 1");
 		homePage.searchForItem(product);
 		Assert.assertTrue(searchPage.isSearch(), "This is not the search results page");
-		
 		System.out.println("		###SearchSteps::i_search_for(String product) -- PASSED!! ###");
 	}
 	 

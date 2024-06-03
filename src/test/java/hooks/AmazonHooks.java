@@ -27,6 +27,7 @@ public class AmazonHooks{
 //		fileManager =new FileManager();
 		try {
 			props = FileManager.loadProperties("props.properties");
+			this.screenCapturer = new ScreenCapturer("screenshots");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,7 +55,7 @@ public class AmazonHooks{
 //			take screenshot
 			try {
 
-				screenCapturer.captureScreenshot(DriverFactory.getDriver(), scenario.getName());
+				screenCapturer.captureScreenshot(DriverFactory.getDriver(),"Failure-");
 				System.out.println("		### Hook::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 //				log.info("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 			} catch (IOException e) {
