@@ -24,7 +24,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 
 import screenshots.ScreenCapturer;
 import utils.FileManager;
@@ -44,7 +43,6 @@ public class Base {
 
 	public Base(String screenshotDir, WebDriver driver) {
 		this.screenCapturer = new ScreenCapturer(screenshotDir);
-		this.driver = driver;
 		// Removed props and driver from constructor as they are accessed through
 		// TestListener
 	}
@@ -129,7 +127,7 @@ public class Base {
 
 		try {
 
-			screenCapturer.captureScreenshot(this.driver, imgType);
+			screenCapturer.captureScreenshot(Base.driver, imgType);
 			System.out.println("		### Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 			log.info("		###  Base::takeScreenshotOnFailure() -- navigation to amazon succesfully! ###");
 		} catch (IOException e) {
@@ -205,7 +203,7 @@ public class Base {
 	}
 
 	public WebDriver getDriver() {
-		return this.driver;
+		return Base.driver;
 	}
 
 	private static String getBrowserName() {

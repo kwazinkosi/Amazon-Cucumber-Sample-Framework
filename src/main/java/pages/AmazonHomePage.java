@@ -2,6 +2,9 @@ package pages;
 import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+
+import java.util.List;
+
 //import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -21,6 +24,9 @@ public class AmazonHomePage extends Base {
     
     @FindBy(id = "search")
     private WebElement searchResults;
+    
+    @FindBy(css = ".nav-search-dropdown > option[selected ='selected'][value='search-alias=aps'")
+	private List<WebElement> categoryDropdown; // when on Home dropdown="All categories"
     
     public WebDriver driver;
     public AmazonHomePage(WebDriver driver) {
@@ -90,5 +96,18 @@ public class AmazonHomePage extends Base {
         }
         return isDisplayed;
     }
+	
+	public boolean verifyHomePage() {
+		
+		boolean isHome =false;
+		String dropdown =categoryDropdown.get(0).getText();
+		if(verifySearchBoxIsDisplayed() ) {
+			if(dropdown.toLowerCase().contains("all categories")) {
+				isHome =true;
+			}
+			
+		}
+		return isHome;
+	}
 }
 

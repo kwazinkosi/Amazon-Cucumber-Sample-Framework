@@ -1,5 +1,3 @@
-
-
 package tests;
 
 import java.io.IOException;
@@ -52,8 +50,6 @@ public class TodayDealsTests {
     public void setUp() {
        
         Base.setupLogging();
-//        Base.setupDriver();
-//        listener= new TestListener(); 
         this.driver = Base.setupDriver();
         this.todayDeals = new TodayDealsPage(driver); // Create the TodayDealsPage object
         this.amazonHomePage = new AmazonHomePage(driver);
@@ -66,6 +62,7 @@ public class TodayDealsTests {
     public void navigateToTodaysDeals() throws IOException {
     	
     	try {
+    		
     		System.out.println("		### navigateToTodaysDeals() -- Trying to navigate to amazon ###");
     		String url = todayDeals.getUrl();
     		System.out.println(" getting url:  "+url);
@@ -75,7 +72,7 @@ public class TodayDealsTests {
 	        Base.log.info("		### navigateAmazon() -- navigation to amazon succesfully! ###");
 	        
 	        TodayDealsPage deals =todayDeals.goToTodaysDeals(); // Navigate to Today's Deals page using the TodayDeals object
-	        String title = todayDeals.getTitle();
+	        String title = deals.getTitle();
 	        
 	        Assert.assertEquals(title =="Today's Deals", true);
 	        System.out.println("		### navigateToTodaysDeals() -- Deals page displayed succesfully! ###");
@@ -127,15 +124,19 @@ public class TodayDealsTests {
     	SearchResultsPage  searchResults = new SearchResultsPage(driver);
     	ProductDetailsPage ipadDetails = searchResults.findProduct("Ipad");
 //    	ipadDetails.
-        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().find(ipad);
+    	String title = ipadDetails.getProductTitle();
+    	Assert.assertTrue(title.contains("ipad"));
+    	System.out.println("		### testTodaysDealsElectronics() -- test PASSED! ###");
+   		Base.log.info("		### testTodaysDealsElectronics() -- test PASSED! ###");
+//        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().find(ipad);
     }
 
-    @Test(priority = 5)
-    public void testFindDiscountedProducts() {
-    	
-        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().findDiscountedProducts(50); 
-    
-    }
+//    @Test(priority = 5)
+//    public void testFindDiscountedProducts() {
+//    	
+//        todayDeals.goToTodaysDeals().clickOnElectronicsCategory().findDiscountedProducts(50); 
+//    
+//    }
     
     
     

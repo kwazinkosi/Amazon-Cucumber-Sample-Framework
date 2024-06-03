@@ -23,14 +23,16 @@ public class TodayDealsPage extends Base {
     @FindBy(className = "ProductCard-module__card_uyr_Jh7WpSkPx4iEpn4w")
     private List<WebElement> productCards;
     
-    @FindBy(xpath = "//*[@id='slot-2']/div/h1")
+    @FindBy(css = "#nav-subnav a span")
     private WebElement dealsPage;
+    
+  //*[@id="nav-subnav"]/a[1] 
 //    private Actions actions; // for scrolling mainly
     public TodayDealsPage(WebDriver driver) {
         super("screenshots", driver);
         initializePageElements();
     }
-
+//
     public TodayDealsPage goToTodaysDeals() {
         click(todaysDealsLink);
         return this;
