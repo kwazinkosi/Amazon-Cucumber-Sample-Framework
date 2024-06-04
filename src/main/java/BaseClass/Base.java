@@ -14,12 +14,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+//import org.openqa.selenium.chrome.ChromeDriver;
+//import org.openqa.selenium.chrome.ChromeOptions;
+//import org.openqa.selenium.edge.EdgeDriver;
+//import org.openqa.selenium.edge.EdgeOptions;
+//import org.openqa.selenium.firefox.FirefoxDriver;
+//import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -39,12 +40,12 @@ public class Base {
 	private static Properties props;
 //    private TestListener listener; // Or private TestListener listener; (depending on approach)
 
-	private static WebDriver driver;
+	protected static WebDriver driver;
 	static FileManager fileManager;
 
 	public Base(String screenshotDir, WebDriver driver) {
 		this.screenCapturer = new ScreenCapturer(screenshotDir);
-		this.driver =driver; //TODO: to remove this
+		Base.driver =driver; //TODO: to remove this
 		wait = WebDriverWaitManager.createWebDriverWait(driver, timeoutSec);
 	}
 
@@ -96,7 +97,7 @@ public class Base {
 		return driver;
 	}
 */
-	private static WebDriver createWebDriver(String browserName) {
+	/*private static WebDriver createWebDriver(String browserName) {
 		switch (browserName.toLowerCase()) {
 		case "chrome":
 			ChromeOptions cOptions = new ChromeOptions();
@@ -119,10 +120,20 @@ public class Base {
 		default:
 			throw new RuntimeException("Unsupported browser: " + browserName);
 		}
-	}
+	}*/
 
 	public void click(WebElement element) {
 		find(element).click();
+	}
+
+	//a form button
+	public void submit(WebElement element) {
+		find(element).submit();
+	}
+	public void hoverAndClick(WebDriver driver, WebElement element) {
+		  Actions actions = new Actions(driver);
+		  wait.until(ExpectedConditions.elementToBeClickable(element));
+		  actions.moveToElement(element).click().perform();
 	}
 
 	public void takeScreenshotOnFailure(String imgType) throws IOException {
@@ -203,11 +214,11 @@ public class Base {
 		return Base.driver;
 	}
 
-	private static String getBrowserName() {
-		return props.getProperty("browser");
-	}
+//	private static String getBrowserName() {
+//		return props.getProperty("browser");
+//	}
 
-	public String getUrl() {
-		return props.getProperty("appUrl");
-	}
+//	public String getUrl() {
+//		return props.getProperty("appUrl");
+//	}
 }

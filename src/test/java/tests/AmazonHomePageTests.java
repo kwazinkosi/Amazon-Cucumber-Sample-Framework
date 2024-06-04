@@ -117,7 +117,6 @@ public class AmazonHomePageTests {
 
 	@Test(dataProvider = "searchItems", priority = 3)
 	public void testSearchForProductAndVerifyResult(String searchTerm) {
-//    	AmazonHomePage amazonHome =new AmazonHomePage();
 		// Search for the specified item
 		String url =  props.getProperty("appUrl");
 		NavigateToSite.navigateToAmazon(url, DriverFactory.getDriver());
@@ -155,9 +154,6 @@ public class AmazonHomePageTests {
 	@Test(priority = 5)
 	public void verifySearchProductAndBuy() {
 
-//    	AmazonHomePage amazonHome = new AmazonHomePage();
-//    	SearchResultsPage searchResults = new SearchResultsPage();
-//    	CartPage cart =new CartPage();
 		String item = "ipad";
 		// Find the product in the searchResults
 		System.out
@@ -166,6 +162,7 @@ public class AmazonHomePageTests {
 		Assert.assertEquals(product.getProductTitle().toLowerCase().contains(item), true);
 		// Add product to cartproductPage.getDiscountValue(discountElement)
 		product.addToCart(0.0, product);
+//		product.addToCart(product.getProduct());
 		Assert.assertTrue(product.isSliderDisplayed(), "The slider is not displayed");
 		if (!cartPage.isCartEmpty()) {
 			// proceed to checkout

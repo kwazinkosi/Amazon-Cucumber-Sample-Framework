@@ -28,11 +28,11 @@ public class CartPage extends Base {
 	
 	@FindBy(xpath = "//*[@id='quantity_0']")
 	private WebElement delete;
-	private WebDriver driver;
+//	private WebDriver driver;
 	public CartPage(WebDriver driver) {
 
 		super("screenshots", driver);
-    	this.driver = driver;
+    	Base.driver = driver;
 		initializePageElements();
 	}
 

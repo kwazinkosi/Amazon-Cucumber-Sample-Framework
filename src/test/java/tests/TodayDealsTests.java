@@ -19,10 +19,8 @@ import pages.AmazonHomePage;
 import pages.ProductDetailsPage;
 import pages.SearchResultsPage;
 import pages.TodayDealsPage;
-import screenshots.ScreenCapturer;
 import utils.FileManager;
 import utils.NavigateToSite;
-//import utils.TestListener;
 
 
 public class TodayDealsTests {
@@ -48,8 +46,6 @@ public class TodayDealsTests {
     private AmazonHomePage amazonHomePage;
     private ProductDetailsPage productDetails;
     private DriverFactory driverFactory;
-	private FileManager fileManager;
-	private ScreenCapturer screenCapturer;
 	Properties props;
 //    TestListener listener;
     

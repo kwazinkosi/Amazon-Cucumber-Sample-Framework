@@ -3,7 +3,6 @@ package stepDefinitions;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import factory.DriverFactory;
 import io.cucumber.java.en.And;
@@ -51,7 +50,10 @@ public class AddToCartStepDefinitions{
 	public void i_click_on_the_button(String addToCart, String item) {
 		
 		ProductDetailsPage productItem = searchPage.selectItemWithDiscount(item, 0); // after this line we are in the productDetailsPage
-		boolean isProductPage =productItem.isProductPage();
+		
+		String title= DriverFactory.getDriver().getTitle().toLowerCase();
+		
+		boolean isProductPage = title.contains(item.toLowerCase());
 		Assert.assertTrue(isProductPage, "Not on product page");
 		productItem.addToCart(0, productItem);
 		

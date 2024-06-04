@@ -4,14 +4,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
+//import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 import BaseClass.Base;
+import factory.DriverFactory;
 
 public class ProductDetailsPage extends Base {
 
-	@FindBy(css="[name='submit.add-to-cart'") // "//*[@id='add-to-cart-button']")
+	@FindBy(css = "#rightCol #buybox #addToCart_feature_div .a-button-stack") // "//*[@id='add-to-cart-button']")
 	private WebElement addToCartButton;
 	
 	@FindBy(id="attach-sidesheet-checkout-button")
@@ -26,7 +27,7 @@ public class ProductDetailsPage extends Base {
 	@FindBy(css = "[data-cy='title-recipe'] h2 a span")
 	private WebElement title;
 	
-	@FindBy(xpath = "//*[@id='title_feature_div']")
+	@FindBy(xpath = "//*[@id='dp-container']")
 	private WebElement pTitle;
 	
 	@FindBy(css = "[data-cy='price-recipe']  .a-letter-space~span")
@@ -37,11 +38,11 @@ public class ProductDetailsPage extends Base {
 	private String productTitle;
 	private int discountValue;
 	private double price;
-	private WebDriver driver;
+//	private WebDriver driver;
 	public ProductDetailsPage(WebElement product, WebDriver driver) {
 		
 		super( "screenshots", driver);
-    	this.driver = driver;
+//    	this.driver = driver;
 		initializePageElements();
 		this.product = product;	
 		this.discountValue = 0;
@@ -53,12 +54,11 @@ public class ProductDetailsPage extends Base {
     public void addToCart(double minDiscount, ProductDetailsPage productDetails) {
         // Check for discount
         if (productDetails.getProductDiscount() >= minDiscount) {
-        	// Wait for the button to be clickable with scrolling
-//            wait.until(ExpectedConditions.elementToBeClickable(addToCartButton));
-//        	Actions action =new Actions(getDriver());
-//        	action.scrollByAmount(0, 500).perform();
-//        	action.scrollToElement(addToCartButton).perform();
-        	JavascriptExecutor js = (JavascriptExecutor) getDriver(); js.executeScript("window.scrollBy(0,200)");
+
+        	JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+        	js.executeScript("window.scrollBy(0,1000)");
+        	hoverAndClick(DriverFactory.getDriver(), addToCartButton );
+        	submit(addToCartButton);
         	click(addToCartButton);
       
             // check if the proceedToCart element is displayed
@@ -80,6 +80,12 @@ public class ProductDetailsPage extends Base {
         }
     }
     
+    public void addToCart(WebElement element) {
+    	
+		WebElement addButton =element.findElement(By.cssSelector(".a-section.puis-atcb-add-container.aok-inline-block"));
+		addButton.click();
+	}
+    
     // Get the discount percentage
     private String getDiscountPercentage(WebElement discountElement) {
         
@@ -90,7 +96,7 @@ public class ProductDetailsPage extends Base {
     }
     
     public void goToCart() {
-    	click(cart);
+    	submit(cart);
     }
     
     public int getDiscountValue(WebElement discountElement) {
@@ -124,7 +130,7 @@ public class ProductDetailsPage extends Base {
     }
     
     public boolean isProductPage() {
-    	if(pTitle.isDisplayed()) {
+    	if(isDisplayed(pTitle)) {
     		return true;
     	}
     	return false;

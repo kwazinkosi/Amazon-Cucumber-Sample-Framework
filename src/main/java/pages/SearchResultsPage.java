@@ -3,6 +3,7 @@ package pages;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,12 +31,12 @@ public class SearchResultsPage extends Base {
 	private WebElement searchBox;
 
 //    public ProductDetailsPage product = new ProductDetailsPage();
-	private WebDriver driver;
+//	private WebDriver driver;
 
 	public SearchResultsPage(WebDriver driver) {
 
 		super("screenshots", driver);
-		this.driver = driver;
+//		this.driver = driver;
 		initializePageElements();
 	}
 
@@ -83,10 +84,21 @@ public class SearchResultsPage extends Base {
 			System.out.println("Couldn't find item: " + itemName);
 			return null;
 		}
+
+		WebElement productSelected =temp.findElement(By.cssSelector("h2 a[target='_blank']"));
+		JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver(); 
+		js.executeScript("window.scrollBy(0,300)");
+    	
 		click(temp); //go to productDetails page
+		if(temp.isDisplayed()) {
+			productSelected.click();
+		}
 		return productPage;	
 	}
 
+	
+	
+	
 	public void searchForItem(String item) {
 
 		log.info("		### SearchResultsPage::searchForItem() -- Searching for item: " + item + " ###");
